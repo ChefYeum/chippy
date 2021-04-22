@@ -1,0 +1,3 @@
+[submodule "backend/cpp/websocketpp"]
+	path = backend/cpp/websocketpp
+	url = https://github.com/zaphoyd/websocketpp.git
