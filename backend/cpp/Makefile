@@ -3,7 +3,7 @@ SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 
-EXT_DIR := /opt/homebrew
+EXT_DIR := /usr
 WEBSOCKETPP_DIR := websocketpp
 
 EXE := $(BIN_DIR)/chippy_server
@@ -13,7 +13,7 @@ OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 CPPFLAGS := -Iinclude -I$(EXT_DIR)/include -I$(WEBSOCKETPP_DIR) -MMD -MP
 CXXFLAGS := -Wall -std=c++11
 LDFLAGS  := -Llib -L$(EXT_DIR)/lib -L$(WEBSOCKETPP_DIR)
-LDLIBS   := -lm -lboost_thread-mt -lboost_system -lboost_chrono -lstdc++
+LDLIBS   := -lm -lboost_thread -lboost_system -lboost_chrono -lpthread -lstdc++
 
 .PHONY: all clean
 
