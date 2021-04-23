@@ -5,11 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'ChipBar.dart';
 
 class GameScreen extends StatefulWidget {
-  final String title;
   final WebSocketChannel channel;
 
-  GameScreen({Key key, @required this.title, @required this.channel})
-      : super(key: key);
+  GameScreen({Key key, @required this.channel}) : super(key: key);
 
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -21,9 +19,6 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Padding(padding: const EdgeInsets.all(20.0), child: ChipBar()
           // Column(
           //   crossAxisAlignment: CrossAxisAlignment.start,
