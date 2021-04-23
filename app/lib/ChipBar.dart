@@ -5,6 +5,7 @@ class ChipBar extends StatelessWidget {
   Widget build(BuildContext context) {
     var chip = Chip();
     return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(
             4,
             (_) => Draggable<Chip>(
@@ -20,8 +21,8 @@ class Chip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         // TODO: Make chip size responsive
-        height: 60,
-        width: 60,
+        height: 90,
+        width: 90,
         child: Image.asset('lib/assets/chip.png'));
   }
 }
