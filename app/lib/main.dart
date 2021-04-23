@@ -1,3 +1,4 @@
+import 'package:chippy/LoginScreen.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
 import 'GameScreen.dart';
@@ -10,10 +11,14 @@ class MyApp extends StatelessWidget {
     final title = 'WebSocket Demo';
     return MaterialApp(
       title: title,
-      home: GameScreen(
-        title: title,
-        channel: IOWebSocketChannel.connect('ws://59.11.190.155:9002'),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (_) => LoginScreen(),
+        '/game': (_) => GameScreen(
+              title: title,
+              channel: IOWebSocketChannel.connect('ws://59.11.190.155:9002'),
+            )
+      },
     );
   }
 }
