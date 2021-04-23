@@ -4,23 +4,24 @@ class ChipBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var chip = Chip();
-    return Column(children: [
-      Draggable<Chip>(
-        child: chip,
-        feedback: chip,
-        childWhenDragging: chip,
-      )
-    ]);
+    return Row(
+        children: List.generate(
+            4,
+            (_) => Draggable<Chip>(
+                  child: chip,
+                  feedback: chip,
+                  childWhenDragging: chip,
+                )));
   }
-
-  // return Draggable<Image>(
-  //   c
-  // );
 }
 
 class Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Image.asset('lib/assets/chip.png');
+    return Container(
+        // TODO: Make chip size responsive
+        height: 60,
+        width: 60,
+        child: Image.asset('lib/assets/chip.png'));
   }
 }
