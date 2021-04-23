@@ -4,6 +4,12 @@ import 'package:flutter/foundation.dart';
 
 import 'ChipBar.dart';
 
+var layoutDev = Scaffold(
+    body: Column(children: [
+  Expanded(child: Container(color: Colors.green), flex: 5),
+  Expanded(child: Container(color: Colors.brown, child: ChipBar()))
+]));
+
 class GameScreen extends StatefulWidget {
   final WebSocketChannel channel;
 
@@ -19,7 +25,9 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(padding: const EdgeInsets.all(20.0), child: ChipBar()
+      body: Padding(
+          padding: const EdgeInsets.all(0), // 20.0?
+          child: layoutDev
           // Column(
           //   crossAxisAlignment: CrossAxisAlignment.start,
           //   children: <Widget>[
