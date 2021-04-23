@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
+import 'ChipBar.dart';
+
 class GameScreen extends StatefulWidget {
   final String title;
   final WebSocketChannel channel;
@@ -22,29 +24,28 @@ class _GameScreenState extends State<GameScreen> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Form(
-              child: TextFormField(
-                controller: _controller,
-                decoration: InputDecoration(labelText: 'Send a message'),
-              ),
-            ),
-            StreamBuilder(
-              stream: widget.channel.stream,
-              builder: (context, snapshot) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Text(snapshot.hasData ? '${snapshot.data}' : ''),
-                );
-              },
-            )
-          ],
-        ),
-      ),
+      body: Padding(padding: const EdgeInsets.all(20.0), child: ChipBar()
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: <Widget>[
+          //     Form(
+          //       child: TextFormField(
+          //         controller: _controller,
+          //         decoration: InputDecoration(labelText: 'Send a message'),
+          //       ),
+          //     ),
+          //     StreamBuilder(
+          //       stream: widget.channel.stream,
+          //       builder: (context, snapshot) {
+          //         return Padding(
+          //           padding: const EdgeInsets.symmetric(vertical: 24.0),
+          //           child: Text(snapshot.hasData ? '${snapshot.data}' : ''),
+          //         );
+          //       },
+          //     )
+          //   ],
+          // ),
+          ),
       floatingActionButton: FloatingActionButton(
         onPressed: _sendMessage,
         tooltip: 'Send message',
