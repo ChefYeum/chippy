@@ -27,7 +27,8 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       body: Padding(
           padding: const EdgeInsets.all(0), // 20.0?
-          child: layoutDev
+          child:
+              layoutDev // For layout development - Adopt StreamBuilder as below
           // Column(
           //   crossAxisAlignment: CrossAxisAlignment.start,
           //   children: <Widget>[

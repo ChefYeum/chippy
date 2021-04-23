@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          child: Text('Launch Game'),
+          child: Text('Login'),
           onPressed: () {
             Navigator.pushNamed(context, '/game');
           },
