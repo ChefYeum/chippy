@@ -1,9 +1,12 @@
+import 'package:chippy/GameScreen.dart';
 import 'package:chippy/LoginScreen.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
-import 'ChatScreen.dart';
+import 'GameScreen.dart';
 
 void main() => runApp(MyApp());
+
+const WEBSOCKET_URL = 'ws://59.11.190.155:9002';
 
 class MyApp extends StatelessWidget {
   @override
@@ -12,8 +15,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (_) => LoginScreen(),
-        '/game': (_) => ChatScreen(
-              channel: IOWebSocketChannel.connect('ws://59.11.190.155:9002'),
+        '/game': (_) => GameScreen(
+              channel: IOWebSocketChannel.connect(WEBSOCKET_URL),
             )
       },
     );
