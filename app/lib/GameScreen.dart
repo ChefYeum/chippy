@@ -3,12 +3,30 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
 import 'ChipBar.dart';
+import 'PlayerRepr.dart';
 
 var layoutDev = Scaffold(
     body: Column(children: [
-  Expanded(child: Container(color: Colors.green), flex: 5),
+  Expanded(child: Container(color: Colors.green, child: playerBoard), flex: 6),
   Expanded(child: Container(color: Colors.brown, child: ChipBar()))
 ]));
+
+var playerBoard = Row(children: [
+  Expanded(
+      flex: 1,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [PlayerRepr(), PlayerRepr()],
+      )),
+  Expanded(flex: 1, child: SizedBox(width: 50)),
+  Expanded(
+    flex: 1,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [PlayerRepr(), PlayerRepr()],
+    ),
+  )
+]);
 
 class GameScreen extends StatefulWidget {
   final WebSocketChannel channel;
