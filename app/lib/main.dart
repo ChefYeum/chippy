@@ -1,8 +1,8 @@
-import 'package:chippy/GameScreen.dart';
+import 'package:chippy/GameScreen/GameScreen.dart';
 import 'package:chippy/LoginScreen.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
-import 'GameScreen.dart';
+import 'GameScreen/GameScreen.dart';
 
 void main() => runApp(MyApp());
 
