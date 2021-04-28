@@ -16,14 +16,20 @@ var playerBoard = Row(children: [
       flex: 1,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [PlayerRepr(), PlayerRepr()],
+        children: [
+          PlayerRepr(playerUsername: "username1", playerChipCount: 5050),
+          PlayerRepr(playerUsername: "username2", playerChipCount: 4950)
+        ],
       )),
-  Expanded(flex: 1, child: SizedBox(width: 50)),
+  Expanded(flex: 1, child: Center(child: Text("Pot"))),
   Expanded(
     flex: 1,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [PlayerRepr(), PlayerRepr()],
+      children: [
+        PlayerRepr(playerUsername: "username3", playerChipCount: 1250),
+        PlayerRepr(playerUsername: "username4", playerChipCount: 9050)
+      ],
     ),
   )
 ]);
