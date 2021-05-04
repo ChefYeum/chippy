@@ -7,17 +7,19 @@ import 'PlayerRepr.dart';
 
 var layoutDev = Scaffold(
     body: Column(children: [
-  Expanded(child: Container(color: Colors.green, child: board), flex: 6),
+  Expanded(
+      child: Container(
+          color: Colors.green,
+          child: DragTarget<String>(builder: (_, candidateData, rejectedData) {
+            return Expanded(
+                child: Container(color: Colors.green, child: playerBoard),
+                flex: 12);
+          })),
+      flex: 6),
   Expanded(child: Container(color: Colors.brown, child: PlayerControl()))
 ]));
 
-var board = DragTarget<String>(
-    // onAccept: (n),
-    builder: (_, candidateData, rejectedData) {
-  return Expanded(
-      child: Container(color: Colors.green, child: playerBoard), flex: 12);
-});
-
+// TODO: abstract it out as a UI widget
 var playerBoard = Row(children: [
   Expanded(
       flex: 1,

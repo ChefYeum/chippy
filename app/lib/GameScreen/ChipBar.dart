@@ -12,7 +12,6 @@ class ChipBar extends StatelessWidget {
                   data: chip,
                   child: chip,
                   feedback: chip,
-                  // childWhenDragging: chip,
                 )));
   }
 }
@@ -24,9 +23,6 @@ class PokerChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        // TODO: Make chip size responsive
-        height: 90,
-        width: 90,
-        child: Image.asset('lib/assets/chip.png'));
+        height: 90, width: 90, child: Image.asset('lib/assets/chip.png'));
   }
 }
