@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
-import 'ChipBar.dart';
+import 'PlayerControl.dart';
 import 'PlayerRepr.dart';
 
 var layoutDev = Scaffold(
     body: Column(children: [
-  Expanded(child: Container(color: Colors.green, child: playerBoard), flex: 6),
-  Expanded(child: Container(color: Colors.brown, child: ChipBar()))
+  Expanded(child: Container(color: Colors.green, child: board), flex: 6),
+  Expanded(child: Container(color: Colors.brown, child: PlayerControl()))
 ]));
+
+var board = DragTarget<String>(
+    // onAccept: (n),
+    builder: (_, candidateData, rejectedData) {
+  return Expanded(
+      child: Container(color: Colors.green, child: playerBoard), flex: 12);
+});
 
 var playerBoard = Row(children: [
   Expanded(

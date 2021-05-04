@@ -3,20 +3,24 @@ import 'package:flutter/material.dart';
 class ChipBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var chip = Chip();
+    var chip = PokerChip();
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(
             4,
-            (_) => Draggable<Chip>(
+            (_) => Draggable<PokerChip>(
+                  data: chip,
                   child: chip,
                   feedback: chip,
-                  childWhenDragging: chip,
+                  // childWhenDragging: chip,
                 )));
   }
 }
 
-class Chip extends StatelessWidget {
+class PokerChip extends StatelessWidget {
+  final int chipValue;
+  PokerChip({this.chipValue});
+
   @override
   Widget build(BuildContext context) {
     return Container(
