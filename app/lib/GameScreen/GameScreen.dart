@@ -76,7 +76,7 @@ class _GameScreenState extends State<GameScreen> {
                           return Container(color: Colors.green, child: board);
                         },
                         onWillAccept: (_) => true,
-                        onAccept: (_) => _incrChipToCall(50)),
+                        onAccept: (chip) => _incrChipToCall(chip.chipValue)),
                     flex: 6),
                 Expanded(
                     child: Container(color: Colors.brown, child: ChipBar()))
