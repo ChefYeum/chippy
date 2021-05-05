@@ -63,7 +63,7 @@ export const createUser: RequestHandler<
     const user = await User.create({
       id: req.body.id,
       name: req.body.name,
-      password: hash(req.body.password),
+      password: await hash(req.body.password),
     });
 
     return res.json({
