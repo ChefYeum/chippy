@@ -53,13 +53,12 @@ class _GameScreenState extends State<GameScreen> {
       Expanded(
         flex: 1,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for (var i = 2; i < playerStates.length; i += 2)
-                  playerStates[i].getPlayerRepr()
-              ])),
-        ),
-      )
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              for (var i = 2; i < playerStates.length; i += 2)
+                playerStates[i].getPlayerRepr()
+            ]),
+      ),
     ]);
 
     return Scaffold(
