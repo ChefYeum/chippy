@@ -5,16 +5,28 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login Screen'),
+        title: Text('Chippy'),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: Text('Login'),
-          onPressed: () {
-            Navigator.pushNamed(context, '/game');
-          },
-        ),
-      ),
+          child: Column(
+        children: [
+          Text("Chippy"),
+          TextField(),
+          TextField(),
+          ElevatedButton(
+            child: Text('Login'),
+            onPressed: () {
+              Navigator.pushNamed(context, '/game'); //TODO: add auth
+            },
+          ),
+          ElevatedButton(
+            child: Text('Sign Up'),
+            onPressed: () {
+              Navigator.pushNamed(context, '/signup');
+            },
+          )
+        ],
+      )),
     );
   }
 }
