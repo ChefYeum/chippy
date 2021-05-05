@@ -25,4 +25,4 @@ export const initUser = function (sequelize: Sequelize) {
   );
 };
 
-export default User;
+export default initUser;

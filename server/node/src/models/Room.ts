@@ -21,4 +21,4 @@ export const initRoom = function (sequelize: Sequelize) {
   );
 };
 
-export default Room;
+export default initRoom;

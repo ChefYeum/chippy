@@ -1,9 +1,13 @@
-import { APIResponse, checkAdminCredentials, WithAdminCredentials } from "api";
+import {
+  APIResponse,
+  checkAdminCredentials,
+  WithAdminCredentials,
+} from "./index";
 import { RequestHandler } from "express";
-import hash from "lib/hasher";
-import generateToken from "lib/token";
-import { User } from "models";
-import { Op } from "sequelize/types";
+import hash from "../lib/hasher";
+import generateToken from "../lib/token";
+import { User } from "../models/User";
+import { Op } from "sequelize";
 
 export const login: RequestHandler<
   {},

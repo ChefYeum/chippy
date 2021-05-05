@@ -1,5 +1,5 @@
 import { Response, Router } from "express";
-import { ADMIN_TOKEN } from "lib/token";
+import { ADMIN_TOKEN } from "../lib/token";
 import main from "./root";
 import { login, logout, createUser } from "./user";
 
