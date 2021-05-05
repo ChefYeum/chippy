@@ -18,6 +18,7 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   TextEditingController _controller = TextEditingController();
 
+  int _potTotal = 0;
   int _chipToCall = 0;
 
   void _incrChipToCall(int n) {
@@ -36,7 +37,11 @@ class _GameScreenState extends State<GameScreen> {
               PlayerRepr(playerUsername: "username2", playerChipCount: 4950)
             ],
           )),
-      Expanded(flex: 1, child: Center(child: Text("$_chipToCall"))),
+      Expanded(
+          child: Column(children: [
+        Expanded(flex: 1, child: Center(child: Text("$_potTotal"))),
+        Expanded(flex: 1, child: Center(child: Text("$_chipToCall"))),
+      ])),
       Expanded(
         flex: 1,
         child: Column(
@@ -70,7 +75,7 @@ class _GameScreenState extends State<GameScreen> {
                     child: Container(color: Colors.brown, child: ChipBar()))
               ]),
 
-              // For layout development - Adopt StreamBuilder as below
+              // TODO: Adopt StreamBuilder as below
               // Column(
               //   crossAxisAlignment: CrossAxisAlignment.start,
               //   children: <Widget>[
