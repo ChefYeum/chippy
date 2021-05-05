@@ -15,8 +15,9 @@ async function run() {
   const sequelize = await initConnection();
 
   for (const initModel of Object.values(models)) {
-    initModel(sequelize);
+    await initModel(sequelize);
   }
+  await sequelize.sync({ force: true });
 
   app.listen(port, () =>
     console.log(`Chippy server is listening at port ${port}`)
