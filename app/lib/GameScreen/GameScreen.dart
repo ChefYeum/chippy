@@ -21,6 +21,12 @@ class _GameScreenState extends State<GameScreen> {
   int _potTotal = 0;
   int _chipToCall = 0;
 
+  var playerStates = [
+    PlayerState(username: 'chefyeum'),
+    PlayerState(username: 'player1'),
+    PlayerState(username: 'player2'),
+  ];
+
   void _incrChipToCall(int n) {
     setState(() => _chipToCall += n);
   }
@@ -33,8 +39,8 @@ class _GameScreenState extends State<GameScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              PlayerRepr(playerUsername: "username1", playerChipCount: 5050),
-              PlayerRepr(playerUsername: "username2", playerChipCount: 4950)
+              playerStates[1]?.getPlayerRepr(),
+              playerStates[3]?.getPlayerRepr(),
             ],
           )),
       Expanded(
@@ -47,8 +53,8 @@ class _GameScreenState extends State<GameScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            PlayerRepr(playerUsername: "username3", playerChipCount: 1250),
-            PlayerRepr(playerUsername: "username4", playerChipCount: 9050)
+            playerStates[2]?.getPlayerRepr(),
+            playerStates[4]?.getPlayerRepr()
           ],
         ),
       )

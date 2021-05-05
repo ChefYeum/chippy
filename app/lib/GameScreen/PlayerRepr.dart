@@ -35,3 +35,15 @@ class PlayerRepr extends StatelessWidget {
     ]);
   }
 }
+
+class PlayerState {
+  String username;
+  int chipCount = 0;
+
+  PlayerState({@required this.username});
+
+  PlayerRepr getPlayerRepr() {
+    return PlayerRepr(
+        playerUsername: this.username, playerChipCount: this.chipCount);
+  }
+}
