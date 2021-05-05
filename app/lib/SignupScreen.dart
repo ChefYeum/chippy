@@ -38,18 +38,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var status = FutureBuilder<String>(
-        future: signupRes,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data);
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
-
     var child = Scaffold(
       appBar: AppBar(
         title: Text('Chippy'),
@@ -72,15 +60,19 @@ class _SignupScreenState extends State<SignupScreen> {
             onPressed: () {
               signupRes = createUser(_controllers["id"].text,
                   _controllers["name"].text, _controllers["pw"].text);
-
-              // Error handling:
-              // if (response.statusCode == 201) {
-              // } else {
-              //   throw Exception('Failed to create album.');
-              // }
             },
           ),
-          status
+          FutureBuilder<bool>(
+              future: signupRes,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data ? "yee" : "nay");
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                } else {
+                  return CircularProgressIndicator();
+                }
+              })
         ],
       )),
     );
