@@ -6,7 +6,7 @@ export const ADMIN_TOKEN = getEnv("ADMIN_TOKEN", true) ?? "";
 export const JWT_SECRET = getEnv("JWT_SECRET", true) ?? "";
 
 const generateToken = async (user: User) => {
-  return jwt.sign({ userId: user.id }, JWT_SECRET);
+  return jwt.sign({ userId: user.uuid }, JWT_SECRET);
 };
 
 export default generateToken;

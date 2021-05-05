@@ -11,7 +11,7 @@ import { Op } from "sequelize";
 
 export const login: RequestHandler<
   {},
-  APIResponse<{ id: string; token: string }>,
+  APIResponse<{ uuid: string; token: string }>,
   { id: string; password: string }
 > = async (req, res, next) => {
   try {
@@ -36,7 +36,7 @@ export const login: RequestHandler<
       success: true,
       data: {
         token: await generateToken(user),
-        id: user.id,
+        uuid: user.uuid,
       },
     });
   } catch (err) {
@@ -52,17 +52,16 @@ export const logout: RequestHandler = async (req, res, next) => {
 
 export const createUser: RequestHandler<
   {},
-  APIResponse<{ id: string }>,
-  WithAdminCredentials & { name: string; password: string }
+  APIResponse<{ uuid: string; token: string }>,
+  { id: string; name: string; password: string }
 > = async (req, res, next) => {
-  if (!checkAdminCredentials(req.body, res)) return;
-
   try {
-    if (!req.body.name || !req.body.password) {
+    if (!req.body.name || !req.body.id || !req.body.password) {
       return res.status(400).json({ success: false });
     }
 
     const user = await User.create({
+      id: req.body.id,
       name: req.body.name,
       password: hash(req.body.password),
     });
@@ -70,7 +69,8 @@ export const createUser: RequestHandler<
     return res.json({
       success: true,
       data: {
-        id: user.id,
+        token: await generateToken(user),
+        uuid: user.uuid,
       },
     });
   } catch (err) {

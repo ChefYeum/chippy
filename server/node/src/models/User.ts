@@ -1,6 +1,7 @@
 import { INTEGER, Model, Sequelize, STRING, UUID, UUIDV4 } from "sequelize";
 
 export class User extends Model {
+  uuid!: string;
   id!: string;
   name!: string;
   password!: string;
@@ -9,10 +10,13 @@ export class User extends Model {
 export const initUser = function (sequelize: Sequelize) {
   return User.init(
     {
-      id: {
+      uuid: {
         type: UUID,
         defaultValue: UUIDV4,
         primaryKey: true,
+      },
+      id: {
+        type: STRING,
       },
       password: {
         type: STRING,
