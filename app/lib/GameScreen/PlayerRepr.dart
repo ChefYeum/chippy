@@ -42,6 +42,10 @@ class PlayerState {
 
   PlayerState({@required this.username});
 
+  void incrChipCount(int n) {
+    this.chipCount += n;
+  }
+
   PlayerRepr getPlayerRepr() {
     return PlayerRepr(
         playerUsername: this.username, playerChipCount: this.chipCount);

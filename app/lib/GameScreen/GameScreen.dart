@@ -36,13 +36,15 @@ class _GameScreenState extends State<GameScreen> {
     var board = Row(children: [
       Expanded(
           flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              playerStates[1]?.getPlayerRepr(),
-              playerStates[3]?.getPlayerRepr(),
-            ],
-          )),
+          child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // children: [
+              //   playerStates[1]?.getPlayerRepr(),
+              //   // playerStates[3]?.getPlayerRepr(),
+              // ],
+              children: [
+                for (var i = 1; i < playerStates.length; i += 2)
+                  playerStates[i].getPlayerRepr()
+              ])),
       Expanded(
           child: Column(children: [
         Expanded(flex: 1, child: Center(child: Text("$_potTotal"))),
@@ -52,10 +54,10 @@ class _GameScreenState extends State<GameScreen> {
         flex: 1,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            playerStates[2]?.getPlayerRepr(),
-            playerStates[4]?.getPlayerRepr()
-          ],
+              children: [
+                for (var i = 2; i < playerStates.length; i += 2)
+                  playerStates[i].getPlayerRepr()
+              ])),
         ),
       )
     ]);
@@ -103,7 +105,10 @@ class _GameScreenState extends State<GameScreen> {
               //   ],
               // ),
               floatingActionButton: FloatingActionButton(
-                onPressed: _sendMessage,
+                // onPressed: _sendMessage,
+                onPressed: () => {
+                  setState(() => {playerStates[1].incrChipCount(500)})
+                },
                 tooltip: 'Send message',
                 child: Icon(Icons.send),
               ), // This trailing comma makes auto-formatting nicer for build methods.
