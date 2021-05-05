@@ -1,21 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-Future<bool> createUser(String id, name, pw) async {
-  final http.Response response = await http.post(
-    Uri.http('localhost:8081', '/user'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{'id': id, 'name': name, 'password': pw}),
-  );
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    throw Exception('Failed to load album');
-  }
-}
+import 'apiClient.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -24,7 +8,6 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   var signupRes;
-  final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {
     "id": TextEditingController(),
     "name": TextEditingController(),
@@ -38,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var child = Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text('Chippy'),
       ),
@@ -76,7 +59,5 @@ class _SignupScreenState extends State<SignupScreen> {
         ],
       )),
     );
-
-    return Form(key: _formKey, child: child);
   }
 }
