@@ -28,7 +28,7 @@ export default function router() {
   const router = Router();
   router.get("/", main);
 
-  router.get("/user/login", login);
+  router.post("/user/login", login);
   router.get("/user/logout", logout);
   router.post("/user", createUser);
 
