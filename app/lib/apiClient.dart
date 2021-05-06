@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Uri getUriForPath(String path) => Uri.http('localhost:8081', path);
+Uri getUriForPath(String path) => Uri.http('59.11.190.155:8081', path);
 
 const POST_DEFAULT_HEADERS = <String, String>{
   'Content-Type': 'application/json; charset=UTF-8',
