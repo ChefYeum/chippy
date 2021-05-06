@@ -3,12 +3,14 @@ import 'dart:convert';
 
 Uri getUriForPath(String path) => Uri.http('localhost:8081', path);
 
+const POST_DEFAULT_HEADERS = <String, String>{
+  'Content-Type': 'application/json; charset=UTF-8',
+};
+
 Future<bool> createUser(String id, name, pw) async {
   final http.Response response = await http.post(
     getUriForPath('/user'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
+    headers: POST_DEFAULT_HEADERS,
     body: jsonEncode(<String, String>{'id': id, 'name': name, 'password': pw}),
   );
   if (response.statusCode == 200) {
@@ -21,13 +23,12 @@ Future<bool> createUser(String id, name, pw) async {
 Future<String> login(String id, pw) async {
   final http.Response response = await http.post(
     getUriForPath('/user/login'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
+    headers: POST_DEFAULT_HEADERS,
     body: jsonEncode(<String, String>{'id': id, 'password': pw}),
   );
   if (response.statusCode == 200) {
-    return "token goes here?";
+    var resData = await jsonDecode(response.body)["data"];
+    return resData["token"];
   } else {
     throw Exception('Failed to login');
   }

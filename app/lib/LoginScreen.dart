@@ -37,10 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           ElevatedButton(
             child: Text('Login'),
-            onPressed: () {
-              // Navigator.pushNamed(context, '/game');
+            onPressed: () async {
               loginRes =
                   login(_controllers["id"].text, _controllers["pw"].text);
+              var token = await loginRes;
+              print(token);
+
+              // TODO: into game with token provided
+              // Navigator.pushNamed(context, '/game');
             },
           ),
           FutureBuilder<String>(
