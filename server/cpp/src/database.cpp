@@ -1,3 +1,4 @@
+#include "database.hpp"
 
 std::string find_opened_room() {
 
