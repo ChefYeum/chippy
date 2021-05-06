@@ -288,8 +288,10 @@ int main() {
     server.run(9002);
 
     server_thread.join();
+    return 0;
 
   } catch (websocketpp::exception const & e) {
     std::cout << e.what() << std::endl;
+    return 1;
   }
 }
