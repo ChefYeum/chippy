@@ -5,6 +5,7 @@ bool open_database(sqlite3 *db) {
 
   int rc = sqlite3_open(env_db_connection_str, &db);
   if(rc != SQLITE_OK) {
+    printf("%s\n", sqlite3_errmsg(db));
     sqlite3_close(db);
     return false;
   }
@@ -18,7 +19,8 @@ bool close_database(sqlite3 *db) {
 
 std::string find_opened_room(sqlite3 *db) {
 
-  char* result_room_id;
+  open_database(db);
+  char* result_room_id = NULL;
   sqlite3_stmt* statement;
 
   sqlite3_prepare_v2(db, FIND_ROOM_QUERY.c_str(), -1, &statement, NULL);
@@ -28,7 +30,7 @@ std::string find_opened_room(sqlite3 *db) {
     if (type != SQLITE_TEXT) {
       continue;
     }
-    result_room_id = (char*)sqlite3_column_text16(statement, 0);
+    result_room_id = (char*)sqlite3_column_text(statement, 0);
     // limit 1
     break;
   }
@@ -36,12 +38,15 @@ std::string find_opened_room(sqlite3 *db) {
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
 
+  close_database(db);
+
   std::string result(result_room_id);
   return result;
 }
 
 bool create_new_room(sqlite3 *db, std::string user_uuid) {
 
+  open_database(db);
   bool result = true;
   sqlite3_stmt* statement;
   sqlite3_prepare_v2(db, CREATE_ROOM_QUERY.c_str(), -1, &statement, NULL);
@@ -54,11 +59,14 @@ bool create_new_room(sqlite3 *db, std::string user_uuid) {
 
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
+
+  close_database(db);
   return result;
 }
 
 bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
 
+  open_database(db);
   bool result = true;
   sqlite3_stmt* statement;
   sqlite3_prepare_v2(db, JOIN_ROOM_QUERY.c_str(), -1, &statement, NULL);
@@ -72,6 +80,8 @@ bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
 
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
+
+  close_database(db);
   return result;
 
 }
@@ -85,6 +95,7 @@ bool close_my_room(sqlite3 *db, std::string user_uuid) {
 
 bool add_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value) {
 
+  open_database(db);
   bool result = true;
   sqlite3_stmt* statement;
   sqlite3_prepare_v2(db, ADD_CHIP_QUERY.c_str(), -1, &statement, NULL);
@@ -99,12 +110,15 @@ bool add_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value
 
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
+
+  close_database(db);
   return result;
 
 }
 
 bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value) {
 
+  open_database(db);
   bool result = true;
   sqlite3_stmt* statement;
   sqlite3_prepare_v2(db, REMOVE_CHIP_QUERY.c_str(), -1, &statement, NULL);
@@ -119,12 +133,15 @@ bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int va
 
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
+
+  close_database(db);
   return result;
 
 }
 
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
 
+  open_database(db);
   std::vector<chip_status> statuses;
   sqlite3_stmt* statement;
 
@@ -133,7 +150,7 @@ std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
   while(sqlite3_step(statement) == SQLITE_ROW) {
 
     chip_status status = {
-      .user_name = std::string((char*)sqlite3_column_text16(statement, 0)),
+      .user_name = std::string((char*)sqlite3_column_text(statement, 0)),
       .value = (int)sqlite3_column_int(statement, 1),
     };
 
@@ -143,5 +160,6 @@ std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
 
+  close_database(db);
   return statuses;
 }
