@@ -10,7 +10,7 @@ const hash = async (data: string): Promise<string> => {
       "sha512",
       function (err, x) {
         if (err) return reject(err);
-        resolve(x.toString());
+        resolve(x.toString("hex"));
       }
     )
   );
