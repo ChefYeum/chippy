@@ -40,9 +40,11 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
           ElevatedButton(
             child: Text('Register'),
-            onPressed: () {
+            onPressed: () async {
               signupRes = createUser(_controllers["id"].text,
                   _controllers["name"].text, _controllers["pw"].text);
+              var token = await signupRes;
+              Navigator.pushNamed(context, '/game', arguments: token);
             },
           ),
           FutureBuilder<bool>(
