@@ -44,12 +44,15 @@ std::string find_opened_room(sqlite3 *db) {
   return result;
 }
 
-std::string find_user_status(sqlite3 *db, std::string user_uuid) {
+chip_status find_user_status(sqlite3 *db, std::string user_uuid) {
 
   open_database(db);
   sqlite3_stmt* statement;
 
-  chip_status status = NULL;
+  chip_status status = {
+    .user_name = std::string(""),
+    .value = 0,
+  };
 
   sqlite3_prepare_v2(db, FIND_USER_STATUS_QUERY.c_str(), -1, &statement, NULL);
   sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
