@@ -1,8 +1,4 @@
-import {
-  APIResponse,
-  checkAdminCredentials,
-  WithAdminCredentials,
-} from "./index";
+import { APIResponse } from "./index";
 import { RequestHandler } from "express";
 import hash from "../lib/hasher";
 import generateToken from "../lib/token";
