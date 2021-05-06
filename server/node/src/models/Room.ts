@@ -24,7 +24,7 @@ export const initRoom = async function (sequelize: Sequelize) {
   );
 
   // Host
-  User.hasOne(Room, { foreignKey: "id", as: "host" });
+  User.hasOne(Room, { foreignKey: "host" });
   return room;
 };
 
