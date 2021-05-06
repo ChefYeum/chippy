@@ -19,16 +19,25 @@ class _GameScreenState extends State<GameScreen> {
   int _chipToCall = 0;
   String playerToken;
 
-  var myState =
-      PlayerState(username: 'chefyeum'); // TODO: update it from route argument
+  var myState = PlayerState(
+      username: 'chefyeum',
+      displayedName: 'ChefYeum',
+      chipCount: 5020); // TODO: update it from route argument
 
   var otherPlayerStates = [
-    PlayerState(username: 'player1'),
-    PlayerState(username: 'player2'),
+    PlayerState(
+        username: 'player1', displayedName: 'player1name', chipCount: 5000),
+    PlayerState(
+        username: 'player2', displayedName: 'player2name', chipCount: 5000),
   ];
 
   void _incrChipToCall(int n) {
-    setState(() => _chipToCall += n);
+    if (myState.chipCount >= n) {
+      setState(() {
+        myState.chipCount -= n;
+        _chipToCall += n;
+      });
+    } // TODO: Else do nothing?
   }
 
   @override
@@ -64,17 +73,24 @@ class _GameScreenState extends State<GameScreen> {
             child: Scaffold(
               body: Column(children: [
                 Expanded(
-                    child: DragTarget<PokerChip>(
-                        builder: (
-                          BuildContext context,
-                          List<dynamic> accepted,
-                          List<dynamic> rejected,
-                        ) {
-                          return Container(
-                              color: Color(0xff87A330), child: board);
-                        },
-                        onWillAccept: (_) => true,
-                        onAccept: (chip) => _incrChipToCall(chip.chipValue)),
+                    child: Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        DragTarget<PokerChip>(
+                            builder: (
+                              BuildContext context,
+                              List<dynamic> accepted,
+                              List<dynamic> rejected,
+                            ) {
+                              return Container(
+                                  color: Color(0xff87A330), child: board);
+                            },
+                            onWillAccept: (_) => true,
+                            onAccept: (chip) =>
+                                _incrChipToCall(chip.chipValue)),
+                        Text("🪙 ${myState.chipCount}"),
+                      ],
+                    ),
                     flex: 6),
                 Expanded(
                     child:

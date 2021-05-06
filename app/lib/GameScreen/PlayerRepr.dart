@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class PlayerRepr extends StatelessWidget {
-  final playerChipCount, playerUsername;
-  PlayerRepr({this.playerUsername, this.playerChipCount});
+  final playerChipCount, playerDisplayedName;
+  PlayerRepr({this.playerDisplayedName, this.playerChipCount});
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Text(this.playerUsername),
+      Text(this.playerDisplayedName),
       Center(
         child: Container(
           margin: EdgeInsets.all(10),
@@ -19,7 +19,7 @@ class PlayerRepr extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(this.playerChipCount.toString()),
+                Text("🪙 ${this.playerChipCount}"),
               ],
             ),
           ),
@@ -37,17 +37,17 @@ class PlayerRepr extends StatelessWidget {
 }
 
 class PlayerState {
-  String username;
+  String username, displayedName;
   int chipCount = 0;
 
-  PlayerState({@required this.username});
-
-  void incrChipCount(int n) {
-    this.chipCount += n;
-  }
+  PlayerState(
+      {@required this.username,
+      @required this.displayedName,
+      @required this.chipCount});
 
   PlayerRepr getPlayerRepr() {
     return PlayerRepr(
-        playerUsername: this.username, playerChipCount: this.chipCount);
+        playerDisplayedName: this.displayedName,
+        playerChipCount: this.chipCount);
   }
 }
