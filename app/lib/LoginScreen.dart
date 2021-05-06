@@ -41,10 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
               loginRes =
                   login(_controllers["id"].text, _controllers["pw"].text);
               var token = await loginRes;
-              print(token);
 
-              // TODO: into game with token provided
-              // Navigator.pushNamed(context, '/game');
+              Navigator.pushNamed(context, '/game', arguments: token);
             },
           ),
           FutureBuilder<String>(

@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 
 import 'PlayerRepr.dart';
 
-// TODO: abstract it out as a UI widget
 class GameScreen extends StatefulWidget {
   final WebSocketChannel channel;
 
@@ -33,6 +32,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String token = ModalRoute.of(context).settings.arguments;
     var board = Row(children: [
       Expanded(
           flex: 1,
