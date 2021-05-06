@@ -4,7 +4,7 @@ import hash from "../lib/hasher";
 import generateToken from "../lib/token";
 import { User } from "../models/User";
 import { Op } from "sequelize";
-import { Room } from "models/Room";
+import { Room } from "../models/Room";
 
 export const login: RequestHandler<
   {},
