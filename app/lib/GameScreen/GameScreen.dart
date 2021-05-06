@@ -68,49 +68,44 @@ class _GameScreenState extends State<GameScreen> {
     ]);
 
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(0), // 20.0?
-      child: Scaffold(
-        body: Column(children: [
-          Expanded(
-              child: Stack(
-                alignment: Alignment.bottomLeft,
-                children: [
-                  DragTarget<PokerChip>(
-                      builder: (
-                        BuildContext context,
-                        List<dynamic> accepted,
-                        List<dynamic> rejected,
-                      ) {
-                        return Container(
-                            color: Color(0xff87A330), child: board);
-                      },
-                      onWillAccept: (_) => true,
-                      onAccept: (chip) => _incrChipToCall(chip.chipValue)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("🪙 ${myState.chipCount}"),
-                      TextButton(
-                        child: Text("Call $_chipToCall",
-                            style: TextStyle(fontSize: 24)),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    side: BorderSide(color: Colors.red)))),
-                        onPressed: _callChips,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              flex: 6),
-          Expanded(child: Container(color: Color(0xff243010), child: ChipBar()))
-        ]),
-      ),
-    ));
+      body: Column(children: [
+        Expanded(
+            child: Stack(
+              alignment: Alignment.bottomLeft,
+              children: [
+                DragTarget<PokerChip>(
+                    builder: (
+                      BuildContext context,
+                      List<dynamic> accepted,
+                      List<dynamic> rejected,
+                    ) {
+                      return Container(color: Color(0xff87A330), child: board);
+                    },
+                    onWillAccept: (_) => true,
+                    onAccept: (chip) => _incrChipToCall(chip.chipValue)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("🪙 ${myState.chipCount}"),
+                    TextButton(
+                      child: Text("Call $_chipToCall",
+                          style: TextStyle(fontSize: 24)),
+                      style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      side: BorderSide(color: Colors.red)))),
+                      onPressed: _callChips,
+                    )
+                  ],
+                )
+              ],
+            ),
+            flex: 6),
+        Expanded(child: Container(color: Color(0xff243010), child: ChipBar()))
+      ]),
+    );
   }
 
   void _callChips() {
