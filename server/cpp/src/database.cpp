@@ -20,7 +20,7 @@ bool close_database(sqlite3 *db) {
 std::string find_opened_room(sqlite3 *db) {
 
   open_database(db);
-  char* result_room_id = NULL;
+  char* result_room_id = "";
   sqlite3_stmt* statement;
 
   sqlite3_prepare_v2(db, FIND_ROOM_QUERY.c_str(), -1, &statement, NULL);
@@ -44,26 +44,18 @@ std::string find_opened_room(sqlite3 *db) {
   return result;
 }
 
-chip_status find_user_status(sqlite3 *db, std::string user_uuid) {
+std::string find_username(sqlite3 *db, std::string user_uuid) {
 
   open_database(db);
+  char* result_username = "";
   sqlite3_stmt* statement;
 
-  chip_status status = {
-    .user_name = std::string(""),
-    .value = 0,
-  };
-
-  sqlite3_prepare_v2(db, FIND_USER_STATUS_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_prepare_v2(db, FIND_USERNAME_QUERY.c_str(), -1, &statement, NULL);
   sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
 
   while(sqlite3_step(statement) == SQLITE_ROW) {
-
-    status = {
-      .user_name = std::string((char*)sqlite3_column_text(statement, 0)),
-      .value = (int)sqlite3_column_int(statement, 1),
-    };
-
+    result_username = (char*)sqlite3_column_text(statement, 0);
+    // limit 1
     break;
   }
 
@@ -72,7 +64,8 @@ chip_status find_user_status(sqlite3 *db, std::string user_uuid) {
 
   close_database(db);
 
-  return status;
+  std::string result(result_username);
+  return result;
 }
 
 bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
