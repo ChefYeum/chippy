@@ -5,10 +5,12 @@
 ### Requirements
 
 - Boost
+- Sqlite3
+- OpenSSL
 - websocketpp (in submodule)
 
 ```shell
-sudo apt install libboost-dev
+sudo apt install -y libboost-dev libsqlite3-dev libssl-dev
 ```
 
 ### How to build and run
