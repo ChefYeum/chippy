@@ -15,7 +15,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  int _potTotal = 0;
+  int _potChipCount = 0;
   int _chipToCall = 0;
   String playerToken;
 
@@ -37,12 +37,12 @@ class _GameScreenState extends State<GameScreen> {
         myState.chipCount -= n;
         _chipToCall += n;
       });
-    } // TODO: Else do nothing?
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var pot = Text("$_potTotal");
+    var pot = Text("$_potChipCount");
     playerToken = ModalRoute.of(context).settings.arguments;
     var board = Row(children: [
       Expanded(
@@ -113,6 +113,20 @@ class _GameScreenState extends State<GameScreen> {
     //   widget.channel.sink.add(_controller.text);
     // }
   }
+
+  // Called when victory claimed
+  void _resetPot() {
+    myState.chipCount += _chipToCall;
+    _chipToCall = 0;
+    _potChipCount = 0;
+  }
+
+  // Called when a new player joins
+  void _addPlayer() {}
+
+  void _victoryClaimed() {}
+
+  void _victoryApproved() {}
 
   @override
   void dispose() {
