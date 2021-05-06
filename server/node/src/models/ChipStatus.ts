@@ -13,7 +13,7 @@ export const initChipStatus = async function (sequelize: Sequelize) {
         type: NUMBER,
       },
     },
-    { sequelize, modelName: "chipstatus" }
+    { sequelize, modelName: "chipstatus", timestamps: false }
   );
   Room.belongsToMany(User, { through: "chipstatus" });
   User.belongsToMany(Room, { through: "chipstatus" });

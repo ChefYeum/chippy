@@ -25,7 +25,7 @@ export const initUser = async function (sequelize: Sequelize) {
         type: STRING,
       },
     },
-    { sequelize, modelName: "users" }
+    { sequelize, modelName: "users", timestamps: false }
   );
 };
 

@@ -18,7 +18,7 @@ export const initRoom = async function (sequelize: Sequelize) {
         type: INTEGER,
       },
     },
-    { sequelize, modelName: "rooms" }
+    { sequelize, modelName: "rooms", timestamps: false }
   );
 
   // Host
