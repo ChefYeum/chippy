@@ -7,7 +7,7 @@ export class User extends Model {
   password!: string;
 }
 
-export const initUser = function (sequelize: Sequelize) {
+export const initUser = async function (sequelize: Sequelize) {
   return User.init(
     {
       uuid: {
@@ -25,7 +25,7 @@ export const initUser = function (sequelize: Sequelize) {
         type: STRING,
       },
     },
-    { sequelize, modelName: "users" }
+    { sequelize, modelName: "users", timestamps: false }
   );
 };
 

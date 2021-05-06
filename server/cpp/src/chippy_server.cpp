@@ -1,13 +1,24 @@
 #include <iostream>
 #include <set>
+#include <jwt-cpp/jwt.h>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+
+#define MAXIMUM_MESSAGE_LENGTH 500
+#define MAXIMUM_FRAGMENT_LENGTH 100
+#define TOKENS_LENGTH 2
 
 using namespace std;
 
 /**
  * The source code is loosely based on https://github.com/zaphoyd/websocketpp/blob/master/examples/broadcast_server/broadcast_server.cpp
  */
+
+// command|payload
+typedef struct {
+  char* command;
+  char* payload;
+} chippy_message;
 
 struct connection_data {
   int sessionid;
@@ -143,26 +154,99 @@ public:
     }
   }
 
+  std::string parse_jwt(std::string jwt_str) {
+    const char* env_jwt_secret = std::getenv("JWT_SECRET");
+    auto verifier = jwt::verify().allow_algorithm(jwt::algorithm::hs256{ env_jwt_secret });
+
+    auto decoded_token = jwt::decode(jwt_str);
+
+    verifier.verify(decoded_token);
+
+    for (auto& e : decoded_token.get_payload_claims()) {
+      if (e.first == "userId") {
+        return e.second.as_string();
+      }
+    }
+
+    return "";
+  }
+
   void process_message(connection_hdl hdl, server::message_ptr msg) {
     connection_ptr con = m_server.get_con_from_hdl(hdl);
-    if (con->name.empty()) {
-      con->name = msg->get_payload();
-      std::cout << "Setting name of connection with sessionid "
-                << con->sessionid << " to " << con->name << std::endl;
 
-      std::string response = "Nice to meet you " + msg->get_payload() + "!";
-      send_to(hdl, response);
+    if (con->name.empty()) {
+
+      try {
+        std::string decoded_userid = parse_jwt(msg->get_payload());
+
+        if (decoded_userid != "") {
+          con->name = decoded_userid;
+          std::cout << "Setting name of connection with sessionid "
+                    << con->sessionid << " to " << con->name << std::endl;
+
+          std::string response = "Nice to meet you " + con->name + "!";
+          send_to(hdl, response);
+        } else {
+          throw std::exception();
+        }
+
+      } catch (const std::exception & e) {
+        std::cout << e.what() << std::endl;
+        std::string response = "Invalid authentication info ...";
+        send_to(hdl, response);
+      }
 
     } else {
       std::cout << "Got a message from connection " << con->name
           << " with sessionid " << con->sessionid << std::endl;
 
-      std::string response = "You said " + msg->get_payload();
+      std::string content = msg->get_payload();
+
+      if (content.length() > MAXIMUM_MESSAGE_LENGTH) {
+        std::cout << "Message \"" << content << "\" is too long to process." << std::endl;
+        return;
+      }
+
+      chippy_message message = parse_message(content);
+
+      char response_b[MAXIMUM_FRAGMENT_LENGTH];
+      snprintf(response_b, MAXIMUM_FRAGMENT_LENGTH, message.payload);
+
+      std::string response(response_b);
       send_to(hdl, response);
 
-      std::string broadcast_response = "They said " + msg->get_payload();
+      std::string broadcast_response = "They said " + content;
       broadcast_message(broadcast_response);
     }
+  }
+
+  int split_string(char* input_str, const char* delim, char pToken[TOKENS_LENGTH][MAXIMUM_FRAGMENT_LENGTH]) {
+    int i = 0;
+    char* pos = strtok(input_str, delim);
+
+    strncpy(pToken[i++], pos, MAXIMUM_FRAGMENT_LENGTH);
+
+    while ((pos = strtok(NULL, delim)) != NULL) {
+      strncpy(pToken[i++], pos, MAXIMUM_FRAGMENT_LENGTH);
+    }
+    return i;
+  }
+
+  chippy_message parse_message(std::string message) {
+    const char* delim = "|";
+
+    char ibuf[MAXIMUM_MESSAGE_LENGTH];
+    char obuf[TOKENS_LENGTH][MAXIMUM_FRAGMENT_LENGTH];
+    strncpy(ibuf, message.c_str(), MAXIMUM_MESSAGE_LENGTH);
+
+    split_string(ibuf, delim, obuf);
+
+    chippy_message parsed_message = {
+      .command = obuf[0],
+      .payload = obuf[1],
+    };
+
+    return parsed_message;
   }
 
   void run(uint16_t port) {
@@ -202,8 +286,10 @@ int main() {
     server.run(9002);
 
     server_thread.join();
+    return 0;
 
   } catch (websocketpp::exception const & e) {
     std::cout << e.what() << std::endl;
+    return 1;
   }
 }

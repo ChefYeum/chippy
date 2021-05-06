@@ -1,12 +1,13 @@
 import { INTEGER, Model, Sequelize, UUID, UUIDV4 } from "sequelize";
+import { User } from "./User";
 
 export class Room extends Model {
   id!: string;
   turn!: number;
 }
 
-export const initRoom = function (sequelize: Sequelize) {
-  return Room.init(
+export const initRoom = async function (sequelize: Sequelize) {
+  const room = await Room.init(
     {
       id: {
         type: UUID,
@@ -17,8 +18,12 @@ export const initRoom = function (sequelize: Sequelize) {
         type: INTEGER,
       },
     },
-    { sequelize, modelName: "rooms" }
+    { sequelize, modelName: "rooms", timestamps: false }
   );
+
+  // Host
+  User.hasOne(Room, { foreignKey: "id" });
+  return room;
 };
 
 export default initRoom;

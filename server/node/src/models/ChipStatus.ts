@@ -1,23 +1,23 @@
 import { Model, NUMBER, Sequelize } from "sequelize";
-import Room from "./Room";
-import User from "./User";
+import { Room } from "./Room";
+import { User } from "./User";
 
 export class ChipStatus extends Model {
   value!: number;
 }
 
-export const initChipStatus = function (sequelize: Sequelize) {
-  const chipStatus = ChipStatus.init(
+export const initChipStatus = async function (sequelize: Sequelize) {
+  const chipStatus = await ChipStatus.init(
     {
       value: {
         type: NUMBER,
       },
     },
-    { sequelize, modelName: "chipstatus" }
+    { sequelize, modelName: "chipstatus", timestamps: false }
   );
   Room.belongsToMany(User, { through: "chipstatus" });
   User.belongsToMany(Room, { through: "chipstatus" });
   return chipStatus;
 };
 
-export default ChipStatus;
+export default initChipStatus;
