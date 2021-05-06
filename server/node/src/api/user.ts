@@ -4,6 +4,7 @@ import hash from "../lib/hasher";
 import generateToken from "../lib/token";
 import { User } from "../models/User";
 import { Op } from "sequelize";
+import { Room } from "models/Room";
 
 export const login: RequestHandler<
   {},
@@ -60,6 +61,11 @@ export const createUser: RequestHandler<
       id: req.body.id,
       name: req.body.name,
       password: await hash(req.body.password),
+    });
+
+    const myRoom = await Room.create({
+      turn: 1,
+      host: user.id,
     });
 
     return res.json({
