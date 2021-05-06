@@ -15,7 +15,7 @@ bool open_database(sqlite3 *db);
 bool close_database(sqlite3 *db);
 
 // Find room_id of currently opened room
-const std::string FIND_ROOM_QUERY = "SELECT `room_id` FROM `rooms` LIMIT 1;";
+const std::string FIND_ROOM_QUERY = "SELECT `id` FROM `rooms` LIMIT 1;";
 std::string find_opened_room(sqlite3 *db);
 
 // Make a new room, and assign myself to the host
@@ -38,7 +38,7 @@ bool add_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value
 bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value);
 
 // Get chip statuses of the room
-const std::string GET_CHIP_STATUS_QUERY = "SELECT `userUuid`, `user`.`name` FROM `chipstatuses` WHERE `chipstatuses`.`roomId` = ? JOIN `user` ON `user`.`uuid` = `chipstatuses`.`userUuid`";
+const std::string GET_CHIP_STATUS_QUERY = "SELECT `userUuid`, `users`.`name` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?";
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id);
 
 #endif
