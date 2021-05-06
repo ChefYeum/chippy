@@ -158,7 +158,7 @@ public:
       }
     }
 
-    return NULL;
+    return "";
   }
 
   void process_message(connection_hdl hdl, server::message_ptr msg) {
@@ -169,14 +169,15 @@ public:
       try {
         std::string decoded_userid = parse_jwt(msg->get_payload());
 
-        if (decoded_userid != NULL) {
+        if (decoded_userid != "") {
+          con->name = decoded_userid;
           std::cout << "Setting name of connection with sessionid "
                     << con->sessionid << " to " << con->name << std::endl;
 
           std::string response = "Nice to meet you " + con->name + "!";
           send_to(hdl, response);
         } else {
-          throw std::exception("decoded_userid is NULL");
+          throw std::exception();
         }
 
       } catch (const std::exception & e) {
