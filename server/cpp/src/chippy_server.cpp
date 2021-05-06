@@ -1,5 +1,6 @@
 #include <iostream>
 #include <set>
+#include <jwt-cpp/jwt.h>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
@@ -143,15 +144,46 @@ public:
     }
   }
 
+  std::string parse_jwt(std::string jwt_str) {
+    const char* env_jwt_secret = std::getenv("JWT_SECRET");
+    auto verifier = jwt::verify().allow_algorithm(jwt::algorithm::hs256{ env_jwt_secret });
+
+    auto decoded_token = jwt::decode(jwt_str);
+
+    verifier.verify(decoded_token);
+
+    for (auto& e : decoded_token.get_payload_claims()) {
+      if (e.first == "userId") {
+        return e.second.as_string();
+      }
+    }
+
+    return NULL;
+  }
+
   void process_message(connection_hdl hdl, server::message_ptr msg) {
     connection_ptr con = m_server.get_con_from_hdl(hdl);
-    if (con->name.empty()) {
-      con->name = msg->get_payload();
-      std::cout << "Setting name of connection with sessionid "
-                << con->sessionid << " to " << con->name << std::endl;
 
-      std::string response = "Nice to meet you " + msg->get_payload() + "!";
-      send_to(hdl, response);
+    if (con->name.empty()) {
+
+      try {
+        std::string decoded_userid = parse_jwt(msg->get_payload());
+
+        if (decoded_userid != NULL) {
+          std::cout << "Setting name of connection with sessionid "
+                    << con->sessionid << " to " << con->name << std::endl;
+
+          std::string response = "Nice to meet you " + con->name + "!";
+          send_to(hdl, response);
+        } else {
+          throw std::exception("decoded_userid is NULL");
+        }
+
+      } catch (const std::exception & e) {
+        std::cout << e.what() << std::endl;
+        std::string response = "Invalid authentication info ...";
+        send_to(hdl, response);
+      }
 
     } else {
       std::cout << "Got a message from connection " << con->name
