@@ -65,7 +65,7 @@ export const createUser: RequestHandler<
 
     const myRoom = await Room.create({
       turn: 1,
-      host: user.id,
+      host: user.uuid,
     });
 
     return res.json({
