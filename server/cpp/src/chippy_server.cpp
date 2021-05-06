@@ -4,11 +4,22 @@
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
+#define MAXIMUM_MESSAGE_LENGTH 1000
+#define MAXIMUM_FRAGMENT_LENGTH 180
+#define TOKENS_LENGTH 3
+
 using namespace std;
 
 /**
  * The source code is loosely based on https://github.com/zaphoyd/websocketpp/blob/master/examples/broadcast_server/broadcast_server.cpp
  */
+
+// token|command|payload
+typedef struct {
+  char* token;
+  char* command;
+  char* payload;
+} chippy_message;
 
 struct connection_data {
   int sessionid;
@@ -190,12 +201,54 @@ public:
       std::cout << "Got a message from connection " << con->name
           << " with sessionid " << con->sessionid << std::endl;
 
-      std::string response = "You said " + msg->get_payload();
+      std::string content = msg->get_payload();
+
+      if (content.length() > MAXIMUM_MESSAGE_LENGTH) {
+        std::cout << "Message \"" << content << "\" is too long to process." << std::endl;
+        return;
+      }
+
+      chippy_message message = parse_message(content);
+
+      char response_b[MAXIMUM_FRAGMENT_LENGTH];
+      snprintf(response_b, MAXIMUM_FRAGMENT_LENGTH, message.payload);
+
+      std::string response(response_b);
       send_to(hdl, response);
 
-      std::string broadcast_response = "They said " + msg->get_payload();
+      std::string broadcast_response = "They said " + content;
       broadcast_message(broadcast_response);
     }
+  }
+
+  int split_string(char* input_str, const char* delim, char pToken[TOKENS_LENGTH][MAXIMUM_FRAGMENT_LENGTH]) {
+    int i = 0;
+    char* pos = strtok(input_str, delim);
+
+    strncpy(pToken[i++], pos, MAXIMUM_FRAGMENT_LENGTH);
+
+    while ((pos = strtok(NULL, delim)) != NULL) {
+      strncpy(pToken[i++], pos, MAXIMUM_FRAGMENT_LENGTH);
+    }
+    return i;
+  }
+
+  chippy_message parse_message(std::string message) {
+    const char* delim = "|";
+
+    char ibuf[MAXIMUM_MESSAGE_LENGTH];
+    char obuf[TOKENS_LENGTH][MAXIMUM_FRAGMENT_LENGTH];
+    strncpy(ibuf, message.c_str(), MAXIMUM_MESSAGE_LENGTH);
+
+    split_string(ibuf, delim, obuf);
+
+    chippy_message parsed_message = {
+      .token = obuf[0],
+      .command = obuf[1],
+      .payload = obuf[2],
+    };
+
+    return parsed_message;
   }
 
   void run(uint16_t port) {
