@@ -20,4 +20,4 @@ export const initChipStatus = async function (sequelize: Sequelize) {
   return chipStatus;
 };
 
-export default ChipStatus;
+export default initChipStatus;
