@@ -1,6 +1,6 @@
 import { Model, NUMBER, Sequelize } from "sequelize";
-import Room from "./Room";
-import User from "./User";
+import { Room } from "./Room";
+import { User } from "./User";
 
 export class ChipStatus extends Model {
   value!: number;

@@ -1,4 +1,5 @@
 import { INTEGER, Model, Sequelize, UUID, UUIDV4 } from "sequelize";
+import { User } from "./User";
 
 export class Room extends Model {
   id!: string;
@@ -6,7 +7,7 @@ export class Room extends Model {
 }
 
 export const initRoom = function (sequelize: Sequelize) {
-  return Room.init(
+  const room = Room.init(
     {
       id: {
         type: UUID,
@@ -19,6 +20,10 @@ export const initRoom = function (sequelize: Sequelize) {
     },
     { sequelize, modelName: "rooms" }
   );
+
+  // Host
+  Room.hasOne(User);
+  return room;
 };
 
 export default initRoom;
