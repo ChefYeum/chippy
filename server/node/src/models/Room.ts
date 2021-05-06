@@ -6,8 +6,8 @@ export class Room extends Model {
   turn!: number;
 }
 
-export const initRoom = function (sequelize: Sequelize) {
-  const room = Room.init(
+export const initRoom = async function (sequelize: Sequelize) {
+  const room = await Room.init(
     {
       id: {
         type: UUID,
@@ -22,7 +22,7 @@ export const initRoom = function (sequelize: Sequelize) {
   );
 
   // Host
-  Room.hasOne(User);
+  Room.hasOne(User, { foreignKey: "id" });
   return room;
 };
 

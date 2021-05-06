@@ -6,8 +6,8 @@ export class ChipStatus extends Model {
   value!: number;
 }
 
-export const initChipStatus = function (sequelize: Sequelize) {
-  const chipStatus = ChipStatus.init(
+export const initChipStatus = async function (sequelize: Sequelize) {
+  const chipStatus = await ChipStatus.init(
     {
       value: {
         type: NUMBER,
