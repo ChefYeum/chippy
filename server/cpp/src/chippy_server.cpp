@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <iostream>
 #include <set>
 #include <jwt-cpp/jwt.h>
@@ -209,14 +210,38 @@ public:
 
       chippy_message message = parse_message(content);
 
-      char response_b[MAXIMUM_FRAGMENT_LENGTH];
-      snprintf(response_b, MAXIMUM_FRAGMENT_LENGTH, message.payload);
+      char lowercased_command[32];
+      convert_to_lowercase(message.command, lowercased_command);
 
-      std::string response(response_b);
-      send_to(hdl, response);
+      switch (lowercased_command) {
+        case "host":
+          break;
+        case "join":
+          break;
+        case "deposit":
+          break;
+        case "claimwin":
+          break;
+        case "approvewin":
+          break;
+        default:
+          char response_b[MAXIMUM_FRAGMENT_LENGTH];
+          snprintf(response_b, MAXIMUM_FRAGMENT_LENGTH, message.payload);
 
-      std::string broadcast_response = "They said " + content;
-      broadcast_message(broadcast_response);
+          std::string response(response_b);
+          send_to(hdl, response);
+
+          std::string broadcast_response = "They said " + content;
+          broadcast_message(broadcast_response);
+          break;
+      }
+    }
+  }
+
+  void convert_to_lowercase(const char* input_str, char* output_str) {
+    strcpy(output_str, input_str);
+    for (int i = 0; i < strlen(output_str); i++) {
+      output_str[i] = tolower(output_str[i]);
     }
   }
 
