@@ -1,29 +1,147 @@
 #include "database.hpp"
 
-std::string find_opened_room() {
+bool open_database(sqlite3 *db) {
+  const char* env_db_connection_str = std::getenv("DB_CONNECTION_STRING");
+
+  int rc = sqlite3_open16(env_db_connection_str, &db);
+  if(rc != SQLITE_OK) {
+    sqlite3_close(db);
+    return false;
+  }
+
+  return true;
+}
+
+bool close_database(sqlite3 *db) {
+  return sqlite3_close(db) == SQLITE_OK;
+}
+
+std::string find_opened_room(sqlite3 *db) {
+
+  char* result_room_id;
+  sqlite3_stmt* statement;
+
+  sqlite3_prepare16_v2(db, FIND_ROOM_QUERY.c_str(), -1, &statement, NULL);
+
+  while(sqlite3_step(statement) == SQLITE_ROW) {
+    int type = sqlite3_column_type(statement, 0);
+    if (type != SQLITE_TEXT) {
+      continue;
+    }
+    result_room_id = (char*)sqlite3_column_text16(statement, 0);
+    // limit 1
+    break;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+
+  std::string result(result_room_id);
+  return result;
+}
+
+bool create_new_room(sqlite3 *db, std::string user_uuid) {
+
+  bool result = true;
+  sqlite3_stmt* statement;
+  sqlite3_prepare16_v2(db, CREATE_ROOM_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_text16(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
+
+  if (sqlite3_step(statement) != SQLITE_DONE) {
+    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
+    result = false;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+  return result;
+}
+
+bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
+
+  bool result = true;
+  sqlite3_stmt* statement;
+  sqlite3_prepare16_v2(db, JOIN_ROOM_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_text16(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text16(statement, 2, room_id.c_str(), -1, SQLITE_STATIC);
+
+  if (sqlite3_step(statement) != SQLITE_DONE) {
+    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
+    result = false;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+  return result;
 
 }
 
-bool create_new_room(std::string user_uuid) {
+bool close_my_room(sqlite3 *db, std::string user_uuid) {
+
+  bool result = true;
+  return result;
 
 }
 
-bool join_to_room(std::string user_uuid, std::string room_id) {
+bool add_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value) {
+
+  bool result = true;
+  sqlite3_stmt* statement;
+  sqlite3_prepare16_v2(db, ADD_CHIP_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_int(statement, 1, value);
+  sqlite3_bind_text16(statement, 2, user_uuid.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text16(statement, 3, room_id.c_str(), -1, SQLITE_STATIC);
+
+  if (sqlite3_step(statement) != SQLITE_DONE) {
+    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
+    result = false;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+  return result;
 
 }
 
-bool close_my_room(std::string user_uuid) {
+bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value) {
+
+  bool result = true;
+  sqlite3_stmt* statement;
+  sqlite3_prepare16_v2(db, REMOVE_CHIP_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_int(statement, 1, value);
+  sqlite3_bind_text16(statement, 2, user_uuid.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text16(statement, 3, room_id.c_str(), -1, SQLITE_STATIC);
+
+  if (sqlite3_step(statement) != SQLITE_DONE) {
+    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
+    result = false;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+  return result;
 
 }
 
-bool add_chip(std::string user_uuid, std::string room_id, int value) {
+std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
 
-}
+  std::vector<chip_status> statuses;
+  sqlite3_stmt* statement;
 
-bool remove_chip(std::string user_uuid, std::string room_id, int value) {
+  sqlite3_prepare16_v2(db, GET_CHIP_STATUS_QUERY.c_str(), -1, &statement, NULL);
 
-}
+  while(sqlite3_step(statement) == SQLITE_ROW) {
 
-std::vector<chip_status> get_chip_statuses(std::string room_id) {
+    chip_status status = {
+      .user_name = std::string((char*)sqlite3_column_text16(statement, 0)),
+      .value = (int)sqlite3_column_int(statement, 1),
+    };
 
+    statuses.push_back(status);
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+
+  return statuses;
 }
