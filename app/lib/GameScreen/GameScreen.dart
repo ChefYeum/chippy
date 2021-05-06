@@ -19,8 +19,10 @@ class _GameScreenState extends State<GameScreen> {
   int _chipToCall = 0;
   String playerToken;
 
-  var playerStates = [
-    PlayerState(username: 'chefyeum'),
+  var myState =
+      PlayerState(username: 'chefyeum'); // TODO: update it from route argument
+
+  var otherPlayerStates = [
     PlayerState(username: 'player1'),
     PlayerState(username: 'player2'),
   ];
@@ -38,8 +40,8 @@ class _GameScreenState extends State<GameScreen> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                for (var i = 1; i < playerStates.length; i += 2)
-                  playerStates[i].getPlayerRepr()
+                for (var i = 0; i < otherPlayerStates.length; i += 2)
+                  otherPlayerStates[i].getPlayerRepr()
               ])),
       Expanded(
           child: Column(children: [
@@ -48,12 +50,11 @@ class _GameScreenState extends State<GameScreen> {
       ])),
       Expanded(
         flex: 1,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              for (var i = 2; i < playerStates.length; i += 2)
-                playerStates[i].getPlayerRepr()
-            ]),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          for (var i = 1; i < otherPlayerStates.length; i += 2)
+            otherPlayerStates[i].getPlayerRepr()
+        ]),
       ),
     ]);
 
@@ -69,13 +70,15 @@ class _GameScreenState extends State<GameScreen> {
                           List<dynamic> accepted,
                           List<dynamic> rejected,
                         ) {
-                          return Container(color: Colors.green, child: board);
+                          return Container(
+                              color: Color(0xff87A330), child: board);
                         },
                         onWillAccept: (_) => true,
                         onAccept: (chip) => _incrChipToCall(chip.chipValue)),
                     flex: 6),
                 Expanded(
-                    child: Container(color: Colors.brown, child: ChipBar()))
+                    child:
+                        Container(color: Color(0xff243010), child: ChipBar()))
               ]),
 
               floatingActionButton: FloatingActionButton(
