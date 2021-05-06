@@ -18,9 +18,8 @@ bool close_database(sqlite3 *db);
 const std::string FIND_ROOM_QUERY = "SELECT `id` FROM `rooms` LIMIT 1;";
 std::string find_opened_room(sqlite3 *db);
 
-// Make a new room, and assign myself to the host
-const std::string CREATE_ROOM_QUERY = "INSERT INTO `rooms`(`host`, `turn`) VALUES(?, 1);";
-bool create_new_room(sqlite3 *db, std::string user_uuid);
+const std::string FIND_USER_STATUS_QUERY = "SELECT `users`.`name`, `chipstatuses`.`value` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`userUuid` = ?;";
+chip_status find_user_status(sqlite3 *db, std::string user_uuid);
 
 // Join to the room currently opened
 const std::string JOIN_ROOM_QUERY = "INSERT INTO `chipstatuses`(`userUuid`, `roomId`) VALUES(?, ?);";
@@ -38,7 +37,7 @@ bool add_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value
 bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value);
 
 // Get chip statuses of the room
-const std::string GET_CHIP_STATUS_QUERY = "SELECT `userUuid`, `users`.`name` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?";
+const std::string GET_CHIP_STATUS_QUERY = "SELECT `users`.`name`, `chipstatuses`.`value` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?";
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id);
 
 #endif

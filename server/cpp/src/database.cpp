@@ -44,24 +44,32 @@ std::string find_opened_room(sqlite3 *db) {
   return result;
 }
 
-bool create_new_room(sqlite3 *db, std::string user_uuid) {
+std::string find_user_status(sqlite3 *db, std::string user_uuid) {
 
   open_database(db);
-  bool result = true;
   sqlite3_stmt* statement;
-  sqlite3_prepare_v2(db, CREATE_ROOM_QUERY.c_str(), -1, &statement, NULL);
+
+  chip_status status = NULL;
+
+  sqlite3_prepare_v2(db, FIND_USER_STATUS_QUERY.c_str(), -1, &statement, NULL);
   sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
 
-  if (sqlite3_step(statement) != SQLITE_DONE) {
-    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
-    result = false;
+  while(sqlite3_step(statement) == SQLITE_ROW) {
+
+    status = {
+      .user_name = std::string((char*)sqlite3_column_text(statement, 0)),
+      .value = (int)sqlite3_column_int(statement, 1),
+    };
+
+    break;
   }
 
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
 
   close_database(db);
-  return result;
+
+  return status;
 }
 
 bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
