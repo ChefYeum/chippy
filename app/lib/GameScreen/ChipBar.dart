@@ -23,7 +23,16 @@ class PokerChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 90, width: 90, child: Image.asset('lib/assets/chip.png'));
+    return Stack(
+      children: [
+        Container(
+            height: 90,
+            width: 90,
+            child: Image.asset('lib/assets/chip$chipValue.png')),
+        Text("$chipValue",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+      ],
+      alignment: Alignment.center,
+    );
   }
 }
