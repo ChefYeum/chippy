@@ -4,9 +4,9 @@
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
-#define MAXIMUM_MESSAGE_LENGTH 1000
-#define MAXIMUM_FRAGMENT_LENGTH 180
-#define TOKENS_LENGTH 3
+#define MAXIMUM_MESSAGE_LENGTH 500
+#define MAXIMUM_FRAGMENT_LENGTH 100
+#define TOKENS_LENGTH 2
 
 using namespace std;
 
@@ -14,9 +14,8 @@ using namespace std;
  * The source code is loosely based on https://github.com/zaphoyd/websocketpp/blob/master/examples/broadcast_server/broadcast_server.cpp
  */
 
-// token|command|payload
+// command|payload
 typedef struct {
-  char* token;
   char* command;
   char* payload;
 } chippy_message;
@@ -243,9 +242,8 @@ public:
     split_string(ibuf, delim, obuf);
 
     chippy_message parsed_message = {
-      .token = obuf[0],
-      .command = obuf[1],
-      .payload = obuf[2],
+      .command = obuf[0],
+      .payload = obuf[1],
     };
 
     return parsed_message;
