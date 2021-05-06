@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
-import 'PlayerRepr.dart';
+import 'PlayerState.dart';
+import 'Widgets/BoardRepr.dart';
 
 class GameScreen extends StatefulWidget {
   final WebSocketChannel channel;
@@ -20,16 +21,11 @@ class _GameScreenState extends State<GameScreen> {
   String playerToken;
 
   var myState = PlayerState(
-      username: 'chefyeum',
       displayedName: 'ChefYeum',
       chipCount: 5020); // TODO: update it from route argument
 
-  var otherPlayerStates = [
-    PlayerState(
-        username: 'player1', displayedName: 'player1name', chipCount: 5000),
-    PlayerState(
-        username: 'player2', displayedName: 'player2name', chipCount: 5000),
-  ];
+  var playerIDs = [];
+  var playerStateMap = {};
 
   void _incrChipToCall(int n) {
     if (myState.chipCount >= n) {
@@ -42,30 +38,14 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: for dev testing; remove after
+    _addPlayer("fjiosdifj", "player1name", 5000);
+    _addPlayer("fjiosdi23", "player2name", 5000);
+
     var pot = Text("$_potChipCount");
     playerToken = ModalRoute.of(context).settings.arguments;
-    var board = Row(children: [
-      Expanded(
-          flex: 1,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                for (var i = 0; i < otherPlayerStates.length; i += 2)
-                  otherPlayerStates[i].getPlayerRepr()
-              ])),
-      Expanded(
-          child: Column(children: [
-        Expanded(flex: 1, child: Center(child: pot)),
-      ])),
-      Expanded(
-        flex: 1,
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          for (var i = 1; i < otherPlayerStates.length; i += 2)
-            otherPlayerStates[i].getPlayerRepr()
-        ]),
-      ),
-    ]);
+    var board = BoardRepr(
+        playerStateMap: playerStateMap, playerIDs: playerIDs, pot: pot);
 
     return Scaffold(
       body: Column(children: [
@@ -122,7 +102,11 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   // Called when a new player joins
-  void _addPlayer() {}
+  void _addPlayer(String uuid, displayedName, chipCount) {
+    playerIDs.add(uuid);
+    playerStateMap[uuid] =
+        PlayerState(displayedName: displayedName, chipCount: chipCount);
+  }
 
   void _victoryClaimed() {}
 

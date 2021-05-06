@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import '../PlayerState.dart';
 
 class PlayerRepr extends StatelessWidget {
-  final playerChipCount, playerDisplayedName;
-  PlayerRepr({this.playerDisplayedName, this.playerChipCount});
+  final PlayerState playerState;
+
+  PlayerRepr({@required this.playerState});
+
+  // PlayerRepr getPlayerRepr() {
+  //   return PlayerRepr(
+  //       playerDisplayedName: this.displayedName,
+  //       playerChipCount: this.chipCount);
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Text(this.playerDisplayedName),
+      Text(this.playerState.displayedName),
       Center(
         child: Container(
           margin: EdgeInsets.all(10),
@@ -19,7 +27,7 @@ class PlayerRepr extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("🪙 ${this.playerChipCount}"),
+                Text("🪙 ${playerState.chipCount}"),
               ],
             ),
           ),
@@ -33,21 +41,5 @@ class PlayerRepr extends StatelessWidget {
         ),
       )
     ]);
-  }
-}
-
-class PlayerState {
-  String username, displayedName;
-  int chipCount = 0;
-
-  PlayerState(
-      {@required this.username,
-      @required this.displayedName,
-      @required this.chipCount});
-
-  PlayerRepr getPlayerRepr() {
-    return PlayerRepr(
-        playerDisplayedName: this.displayedName,
-        playerChipCount: this.chipCount);
   }
 }
