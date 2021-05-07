@@ -56,11 +56,13 @@ class _GameScreenState extends State<GameScreen> {
   void _callChips() {}
 
   // Called when a new player joins
-  void _addPlayer(String uuid, displayedName, chipCount) {
+  void _addAnotherPlayer(String uuid, displayedName, chipCount) {
     setState(() {
-      playerUUIDs.add(uuid);
-      playerStateMap[uuid] =
-          PlayerState(displayedName: displayedName, chipCount: chipCount);
+      if (!playerStateMap.containsKey(uuid)) {
+        playerUUIDs.add(uuid);
+        playerStateMap[uuid] =
+            PlayerState(displayedName: displayedName, chipCount: chipCount);
+      }
     });
   }
 
@@ -129,7 +131,7 @@ class _GameScreenState extends State<GameScreen> {
 
     var debugTools = Row(children: [
       TextButton(
-          onPressed: () => _addPlayer(
+          onPressed: () => _addAnotherPlayer(
               "uuid${playerUUIDs.length}", "Player${playerUUIDs.length}", 5000),
           child: Text("Add Player")),
       TextButton(
@@ -184,9 +186,19 @@ class _GameScreenState extends State<GameScreen> {
           if (snapshot.data == "Hi. I'm Chippy. Who are you?")
             wsClient.join();
           else {
-            var signal = WebSocketSignal.fromSignal(snapshot.data);
-            switch (signal.runtimeType) {
-              case JoinedSignal:
+            var signal = WebSocketSignal(snapshot.data);
+            switch (signal.signalType) {
+              case SignalType.JOINED:
+                var uuid = signal.props["uuid"];
+                var displayedName = signal.props["displayedName"];
+                var playerChipCount =
+                    int.parse(signal.props["playerChipCount"]);
+
+                Future.delayed(Duration.zero, () async {
+                  _addAnotherPlayer(uuid, displayedName, playerChipCount);
+                });
+                break;
+              case SignalType.DEPOSITED:
                 break;
               default:
             }
