@@ -5,4 +5,8 @@ class PlayerState {
   int chipCount = 0;
 
   PlayerState({@required this.displayedName, @required this.chipCount});
+
+  void addChip(int chipIncr) {
+    chipCount += chipIncr;
+  }
 }

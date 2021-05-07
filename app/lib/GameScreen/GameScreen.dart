@@ -4,7 +4,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
 import 'PlayerState.dart';
-import 'WebSocketSignal.dart';
 import 'Widgets/BoardRepr.dart';
 
 class GameScreen extends StatefulWidget {
@@ -45,15 +44,6 @@ class _GameScreenState extends State<GameScreen> {
     // TODO: remove after testing
   }
 
-  // Called when victory claimed
-  void _resetPot() {
-    setState(() {
-      myState.chipCount += _chipToCall;
-      _chipToCall = 0;
-      _potChipCount = 0;
-    });
-  }
-
   // Called when a new player joins
   void _addPlayer(String uuid, displayedName, chipCount) {
     setState(() {
@@ -63,9 +53,56 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
-  void _victoryClaimed() {}
+  void _claimVictory() {}
 
-  void _victoryApproved() {}
+  // Popup to ask player for victory approval
+  // Close popup if approved by another player (or majority voting?)
+  Future<void> _victoryClaimedBy(String claimingPlayerUUID) {
+    var claimingPlayerDisplayedName =
+        playerStateMap[claimingPlayerUUID].displayedName;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap a button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Victory Claimed'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    '$claimingPlayerDisplayedName has claimed victory to win the pot of $_potChipCount.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+                child: Text('Deny'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            TextButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _victoryApproved(String winningPlayerUUID) {
+    setState(() {
+      // Reset chip-to-call
+      myState.chipCount += _chipToCall;
+      _chipToCall = 0;
+
+      // Add the pot amount to winning player and reset
+      this.playerStateMap[winningPlayerUUID].addChip(_potChipCount);
+      _potChipCount = 0;
+    });
+  }
 
   @override
   void dispose() {
@@ -86,7 +123,11 @@ class _GameScreenState extends State<GameScreen> {
       TextButton(
           onPressed: () => _addPlayer(
               "uuid${playerUUIDs.length}", "Player${playerUUIDs.length}", 5000),
-          child: Text("Add Player"))
+          child: Text("Add Player")),
+      TextButton(
+          // TODO: assumes there is at least one player
+          onPressed: () => _victoryClaimedBy(playerUUIDs[0]),
+          child: Text("Test")),
     ]);
     var screen = Scaffold(
       body: Column(children: [
@@ -132,7 +173,8 @@ class _GameScreenState extends State<GameScreen> {
       stream: widget.channel.stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          WebSocketSignal(snapshot.data);
+          // TODO: add action
+          // WebSocketSignal(snapshot.data);
         }
         return screen;
       },
