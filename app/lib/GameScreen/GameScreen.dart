@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import 'PlayerState.dart';
 import 'WebSocketClient.dart';
+import 'WebSocketSignal.dart';
 import 'Widgets/BoardRepr.dart';
 
 class GameScreen extends StatefulWidget {
@@ -180,11 +181,15 @@ class _GameScreenState extends State<GameScreen> {
       stream: widget.channel.stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          switch (snapshot.data) {
-            case "Hi. I'm Chippy. Who are you?":
-              wsClient.join();
-              break;
-            default:
+          if (snapshot.data == "Hi. I'm Chippy. Who are you?")
+            wsClient.join();
+          else {
+            var signal = WebSocketSignal.fromSignal(snapshot.data);
+            switch (signal.runtimeType) {
+              case JoinedSignal:
+                break;
+              default:
+            }
           }
         }
         return screen;

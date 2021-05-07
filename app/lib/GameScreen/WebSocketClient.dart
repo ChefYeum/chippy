@@ -16,6 +16,6 @@ class WebSocketClient {
   }
 
   void join() {
-    send('join|$myToken');
+    send('$myToken');
   }
 }
