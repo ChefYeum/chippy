@@ -82,6 +82,23 @@ bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
   sqlite3_finalize(statement);
 }
 
+bool leave_from_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
+
+  bool result = true;
+  sqlite3_stmt* statement;
+  sqlite3_prepare_v2(db, LEAVE_ROOM_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text(statement, 2, room_id.c_str(), -1, SQLITE_STATIC);
+
+  if (sqlite3_step(statement) != SQLITE_DONE) {
+    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
+    result = false;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+}
+
 bool close_my_room(sqlite3 *db, std::string user_uuid) {
 
   bool result = true;
@@ -148,6 +165,25 @@ bool add_chip_to_room(sqlite3 *db, std::string room_id, int value) {
   return result;
 }
 
+int get_chip_value_of_room(sqlite3 *db, std::string room_id) {
+
+  int result = 0;
+  sqlite3_stmt* statement;
+
+  sqlite3_prepare_v2(db, GET_CHIP_VALUE_OF_ROOM_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_text(statement, 1, room_id.c_str(), -1, SQLITE_STATIC);
+
+  while(sqlite3_step(statement) == SQLITE_ROW) {
+    result = sqlite3_column_int(statement, 0);
+    // limit 1
+    break;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+
+  return result;
+}
 
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
 
