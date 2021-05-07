@@ -88,17 +88,6 @@ class _SignupScreenState extends State<SignupScreen> {
               }
             },
           ),
-          FutureBuilder<bool>(
-              future: signupRes,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data ? "yee" : "nay");
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                } else {
-                  return CircularProgressIndicator();
-                }
-              })
         ],
       )),
     );

@@ -78,17 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushNamed(context, '/game', arguments: token);
             },
           ),
-          FutureBuilder<String>(
-              future: loginRes,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(snapshot.data);
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                } else {
-                  return CircularProgressIndicator();
-                }
-              })
         ],
       )),
     );
