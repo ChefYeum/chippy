@@ -7,7 +7,7 @@
 #include "database.hpp"
 
 #define MAXIMUM_MESSAGE_LENGTH 500
-#define MAXIMUM_FRAGMENT_LENGTH 100
+#define MAXIMUM_FRAGMENT_LENGTH 200
 #define TOKENS_LENGTH 2
 
 using namespace std;
@@ -182,9 +182,9 @@ public:
     return "";
   }
 
-  std::string generate_broadcast_message(const char* what, std::string user_name, int chip_status) {
+  std::string generate_broadcast_message(const char* what, std::string user_uuid, std::string user_name, int chip_status) {
     char buf[MAXIMUM_FRAGMENT_LENGTH];
-    sprintf(buf, "%s|%s|%d", what, user_name.c_str(), chip_status);
+    sprintf(buf, "%s|%s|%s|%d", what, user_uuid.c_str(), user_name.c_str(), chip_status);
     std::string broadcast_response(buf);
     return broadcast_response;
   }
