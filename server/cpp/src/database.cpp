@@ -40,20 +40,21 @@ std::string find_opened_room(sqlite3 *db) {
   return result;
 }
 
-std::string find_username(sqlite3 *db, std::string user_uuid) {
+chip_status get_chip_status(sqlite3 *db, std::string user_uuid) {
 
-  std::string result = "";
   sqlite3_stmt* statement;
+  chip_status status = {
+    .user_name = std::string(""),
+    .value = -1,
+  };
 
   sqlite3_prepare_v2(db, FIND_USERNAME_QUERY.c_str(), -1, &statement, NULL);
   sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
 
   while(sqlite3_step(statement) == SQLITE_ROW) {
-    int type = sqlite3_column_type(statement, 0);
-    if (type != SQLITE_TEXT) {
-      continue;
-    }
-    result = std::string(reinterpret_cast<const char*>(sqlite3_column_text(statement, 0)));
+
+    status.user_name = std::string((char*)sqlite3_column_text(statement, 0));
+    status.value = (int)sqlite3_column_int(statement, 1);
     // limit 1
     break;
   }

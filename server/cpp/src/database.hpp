@@ -18,8 +18,8 @@ bool close_database(sqlite3* db);
 const std::string FIND_ROOM_QUERY = "SELECT `id` FROM `rooms` LIMIT 1;";
 std::string find_opened_room(sqlite3 *db);
 
-const std::string FIND_USERNAME_QUERY = "SELECT `name` FROM `users` WHERE `uuid` = ?;";
-std::string find_username(sqlite3 *db, std::string user_uuid);
+const std::string FIND_USERNAME_QUERY = "SELECT `userUuid`, `users`.`name` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?;";
+chip_status get_chip_status(sqlite3 *db, std::string user_uuid);
 
 // Join to the room currently opened
 const std::string JOIN_ROOM_QUERY = "INSERT INTO `chipstatuses`(`userUuid`, `roomId`) VALUES(?, ?);";
