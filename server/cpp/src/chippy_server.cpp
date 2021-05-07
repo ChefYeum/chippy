@@ -275,7 +275,7 @@ public:
         } else {
           // remove and add chip value to room
           remove_chip(db, user_uuid, room_id, value_to_deposit);
-          add_chip_to_room(db, room_id, atoi(payload));
+          add_chip_to_room(db, room_id, value_to_deposit);
           // query my chip status
           chip_status my_new_chip_status = get_chip_status(db, user_uuid, room_id);
           broadcast_message(generate_broadcast_message("deposited", user_uuid, my_new_chip_status.user_name, my_new_chip_status.value));
