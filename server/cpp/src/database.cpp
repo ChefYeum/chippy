@@ -129,6 +129,26 @@ bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int va
   return result;
 }
 
+bool add_chip_to_room(sqlite3 *db, std::string room_id, int value) {
+
+  bool result = true;
+  sqlite3_stmt* statement;
+  sqlite3_prepare_v2(db, ADD_CHIP_TO_ROOM_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_int(statement, 1, value);
+  sqlite3_bind_text(statement, 2, room_id.c_str(), -1, SQLITE_STATIC);
+
+  if (sqlite3_step(statement) != SQLITE_DONE) {
+    printf("line %d: %s\n", __LINE__, sqlite3_errmsg(db));
+    result = false;
+  }
+
+  sqlite3_reset(statement);
+  sqlite3_finalize(statement);
+
+  return result;
+}
+
+
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
 
   std::vector<chip_status> statuses;

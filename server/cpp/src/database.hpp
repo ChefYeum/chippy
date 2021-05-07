@@ -36,6 +36,10 @@ bool add_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value
 
 bool remove_chip(sqlite3 *db, std::string user_uuid, std::string room_id, int value);
 
+// Add chip to 'pot' of the room
+const std::string ADD_CHIP_TO_ROOM_QUERY = "UPDATE `rooms` SET `potValue` = `potValue` + ? WHERE `roomId` = ?";
+bool add_chip_to_room(sqlite3 *db, std::string room_id, int value);
+
 // Get chip statuses of the room
 const std::string GET_CHIP_STATUS_QUERY = "SELECT `users`.`name`, `chipstatuses`.`value` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?";
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id);
