@@ -45,10 +45,8 @@ std::string find_username(sqlite3 *db, std::string user_uuid) {
   std::string result = "";
   sqlite3_stmt* statement;
 
-  sqlite3_prepare_v2(db, "SELECT 1;", -1, &statement, NULL);
-
-  printf("xxx%dxxx\n", sqlite3_step(statement));
-  // sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
+  sqlite3_prepare_v2(db, FIND_USERNAME_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
 
   while(sqlite3_step(statement) == SQLITE_ROW) {
     int type = sqlite3_column_type(statement, 0);
