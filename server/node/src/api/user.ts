@@ -64,7 +64,7 @@ export const createUser: RequestHandler<
     });
 
     const myRoom = await Room.create({
-      turn: 1,
+      potValue: 0,
       host: user.uuid,
     });
 
