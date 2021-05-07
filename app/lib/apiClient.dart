@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// String HOST = '59.11.190.155:8081';
-const String HOST = 'localhost:8081';
+const String HOST = '59.11.190.155:8081';
+// const String HOST = 'localhost:8081';
 
 Uri getUriForPath(String path) => Uri.http(HOST, path);
 
