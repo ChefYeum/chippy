@@ -22,7 +22,8 @@ class _GameScreenState extends State<GameScreen> {
   int _chipToCall = 0;
 
   String _myToken;
-  PlayerState myState;
+  PlayerState myState =
+      PlayerState(uuid: null, chipCount: 0, displayedName: null);
   List<String> playerUUIDs = [];
   Map<String, PlayerState> playerStateMap = {};
 
@@ -32,6 +33,7 @@ class _GameScreenState extends State<GameScreen> {
   initState() {
     super.initState();
 
+    myState = playerStateMap[playerUUIDs[0]];
     // Workaround to access arguments
     Future.delayed(Duration.zero, () {
       setState(() {
@@ -39,9 +41,6 @@ class _GameScreenState extends State<GameScreen> {
         wsClient = WebSocketClient(widget.channel, _myToken);
       });
     });
-
-    // TODO: update it from route argument
-    myState = PlayerState(displayedName: 'ChefYeum', chipCount: 5020);
   }
 
   void _incrChipToCall(int n) {
@@ -58,10 +57,10 @@ class _GameScreenState extends State<GameScreen> {
   // Called when a new player joins
   void _addAnotherPlayer(String uuid, displayedName, chipCount) {
     setState(() {
-      if (!playerStateMap.containsKey(uuid)) {
+      if (myState.uuid != uuid && !playerStateMap.containsKey(uuid)) {
         playerUUIDs.add(uuid);
-        playerStateMap[uuid] =
-            PlayerState(displayedName: displayedName, chipCount: chipCount);
+        playerStateMap[uuid] = PlayerState(
+            uuid: uuid, displayedName: displayedName, chipCount: chipCount);
       }
     });
   }
@@ -193,7 +192,6 @@ class _GameScreenState extends State<GameScreen> {
                 var displayedName = signal.props["displayedName"];
                 var playerChipCount =
                     int.parse(signal.props["playerChipCount"]);
-
                 Future.delayed(Duration.zero, () async {
                   _addAnotherPlayer(uuid, displayedName, playerChipCount);
                 });

@@ -1,5 +1,3 @@
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 class WebSocketClient {
   final channel, myToken;
   var stream;
@@ -17,5 +15,6 @@ class WebSocketClient {
 
   void join() {
     send('$myToken');
+    send('join');
   }
 }
