@@ -22,7 +22,7 @@ const std::string FIND_USERNAME_QUERY = "SELECT `userUuid`, `users`.`name` FROM 
 chip_status get_chip_status(sqlite3 *db, std::string user_uuid);
 
 // Join to the room currently opened
-const std::string JOIN_ROOM_QUERY = "INSERT INTO `chipstatuses`(`userUuid`, `roomId`) VALUES(?, ?);";
+const std::string JOIN_ROOM_QUERY = "INSERT INTO `chipstatuses`(`userUuid`, `roomId`, `value`) VALUES(?, ?, 0);";
 bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id);
 
 // Close and delete the room, if user is host of any room
