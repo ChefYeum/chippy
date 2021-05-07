@@ -10,7 +10,7 @@
 #define MAXIMUM_FRAGMENT_LENGTH 200
 #define TOKENS_LENGTH 2
 
-#define INITIAL_CHIP_VALUE 100
+#define INITIAL_CHIP_VALUE 9000
 
 using namespace std;
 
