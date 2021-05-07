@@ -23,6 +23,8 @@ sudo apt install -y libboost-dev libsqlite3-dev libssl-dev
 
 ```shell
 make
+# path of the database file
+export DB_CONNECTION_STRING="./node/db.sqlite3"
 export JWT_SECRET=super-secret-key
 ./bin/chippy_server
 ```

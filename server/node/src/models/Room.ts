@@ -3,7 +3,8 @@ import { User } from "./User";
 
 export class Room extends Model {
   id!: string;
-  turn!: number;
+  // 'pot' chip value of the room
+  potValue!: number;
   // host of the room(user id)
   host!: string;
 }
@@ -16,7 +17,7 @@ export const initRoom = async function (sequelize: Sequelize) {
         defaultValue: UUIDV4,
         primaryKey: true,
       },
-      turn: {
+      potValue: {
         type: INTEGER,
       },
     },
