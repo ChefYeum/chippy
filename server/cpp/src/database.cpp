@@ -50,7 +50,7 @@ chip_status get_chip_status(sqlite3 *db, std::string user_uuid, std::string room
 
   sqlite3_prepare_v2(db, GET_ONE_CHIP_STATUS_QUERY.c_str(), -1, &statement, NULL);
   sqlite3_bind_text(statement, 1, user_uuid.c_str(), -1, SQLITE_STATIC);
-  sqlite3_bind_text(statement, 1, room_id.c_str(), -1, SQLITE_STATIC);
+  sqlite3_bind_text(statement, 2, room_id.c_str(), -1, SQLITE_STATIC);
 
   while(sqlite3_step(statement) == SQLITE_ROW) {
 
