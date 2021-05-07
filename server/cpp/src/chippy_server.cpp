@@ -248,12 +248,15 @@ public:
       // get opened room id
       std::string room_id = find_opened_room(db);
 
+      // query my chip status
+      chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
+      // which means invalid status
+      bool belongs_to_room = my_chip_status.value != -1;
+
       if (strncmp(lowercased_command, "join", 4) == 0) {
 
-        // query my chip status
-        chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
         // which means invalid status
-        if (my_chip_status.value == -1) {
+        if (belongs_to_room == false) {
           join_to_room(db, user_uuid, room_id);
           add_chip(db, user_uuid, room_id, INITIAL_CHIP_VALUE);
         }
@@ -265,6 +268,11 @@ public:
         }
 
       } else if (strncmp(lowercased_command, "deposit", 7) == 0) {
+
+        if (belongs_to_room == false) {
+          send_to(hdl, "Please join room first.");
+          return;
+        }
 
         // query my chip status
         chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
@@ -283,6 +291,11 @@ public:
 
       } else if (strncmp(lowercased_command, "claimwin", 8) == 0) {
 
+        if (belongs_to_room == false) {
+          send_to(hdl, "Please join room first.");
+          return;
+        }
+
         value_to_claim[room_id] = get_chip_value_of_room(db, room_id);
         claimer[room_id] = user_uuid;
 
@@ -291,6 +304,11 @@ public:
         broadcast_message(generate_broadcast_message("claimedwin", user_uuid, my_chip_status.user_name, my_chip_status.value));
 
       } else if (strncmp(lowercased_command, "approvewin", 10) == 0) {
+
+        if (belongs_to_room == false) {
+          send_to(hdl, "Please join room first.");
+          return;
+        }
 
         auto claim_i = value_to_claim.find(room_id);
         auto claim_who = claimer.find(room_id);
