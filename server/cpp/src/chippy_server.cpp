@@ -220,19 +220,22 @@ public:
 
       std::string content = msg->get_payload();
 
+      // ignore too long messages
       if (content.length() > MAXIMUM_MESSAGE_LENGTH) {
         std::cout << "Message \"" << content << "\" is too long to process." << std::endl;
         return;
       }
 
-      std::string user_uuid = con->name;
+      // parse message from websocket content
       chippy_message message = parse_message(content);
-
-      std::string user_name = find_username(db, user_uuid);
-
+      // convert it to lowercase
       char lowercased_command[32];
       convert_to_lowercase(message.command, lowercased_command);
-      int chip_status = 0;
+
+      // get user uuid
+      std::string user_uuid = con->name;
+      // query username using user uuid
+      std::string user_name = find_username(db, user_uuid);
 
       if (strncmp(lowercased_command, "join", 4) == 0) {
 
