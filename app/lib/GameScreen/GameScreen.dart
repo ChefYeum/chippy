@@ -4,6 +4,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
 import 'PlayerState.dart';
+import 'WebSocketClient.dart';
 import 'Widgets/BoardRepr.dart';
 
 class GameScreen extends StatefulWidget {
@@ -18,14 +19,22 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   int _potChipCount = 0;
   int _chipToCall = 0;
-  String playerToken;
 
-  var myState = PlayerState(
-      displayedName: 'ChefYeum',
-      chipCount: 5020); // TODO: update it from route argument
+  String _myToken;
+  PlayerState myState;
+  List<String> playerUUIDs = [];
+  Map<String, PlayerState> playerStateMap = {};
 
-  var playerUUIDs = [];
-  var playerStateMap = {};
+  WebSocketClient wsClient;
+
+  @override
+  initState() {
+    super.initState();
+    wsClient = WebSocketClient(widget.channel, _myToken);
+
+    // TODO: update it from route argument
+    myState = PlayerState(displayedName: 'ChefYeum', chipCount: 5020);
+  }
 
   void _incrChipToCall(int n) {
     if (myState.chipCount >= n) {
@@ -36,13 +45,7 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-  void _callChips() {
-    // if (_controller.text.isNotEmpty) {
-    //   widget.channel.sink.add(_controller.text);
-    // }
-
-    // TODO: remove after testing
-  }
+  void _callChips() {}
 
   // Called when a new player joins
   void _addPlayer(String uuid, displayedName, chipCount) {
@@ -106,14 +109,13 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   void dispose() {
-    widget.channel.sink.close();
+    wsClient.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    playerToken = ModalRoute.of(context).settings.arguments;
-    widget.channel.sink.add('join|$playerToken');
+    _myToken = ModalRoute.of(context).settings.arguments;
 
     var pot = Text("$_potChipCount");
     var board = BoardRepr(
@@ -170,11 +172,15 @@ class _GameScreenState extends State<GameScreen> {
       ]),
     );
     return StreamBuilder(
-      stream: widget.channel.stream,
+      stream: wsClient.stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          // TODO: add action
-          // WebSocketSignal(snapshot.data);
+          switch (snapshot.data) {
+            case "Hi. I'm Chippy. Who are you?":
+              wsClient.join();
+              break;
+            default:
+          }
         }
         return screen;
       },
