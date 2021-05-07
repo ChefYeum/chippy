@@ -4,6 +4,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:flutter/foundation.dart';
 
 import 'PlayerState.dart';
+import 'WebSocketSignal.dart';
 import 'Widgets/BoardRepr.dart';
 
 class GameScreen extends StatefulWidget {
@@ -36,18 +37,20 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
+  // TODO: for dev testing; remove after
+  // _addPlayer("fjiosdifj", "player1name", 5000);
+  // // _addPlayer("fjiosdi23", "player2name", 5000);
+
   @override
   Widget build(BuildContext context) {
-    // TODO: for dev testing; remove after
-    _addPlayer("fjiosdifj", "player1name", 5000);
-    _addPlayer("fjiosdi23", "player2name", 5000);
+    playerToken = ModalRoute.of(context).settings.arguments;
+    widget.channel.sink.add('join|$playerToken');
 
     var pot = Text("$_potChipCount");
-    playerToken = ModalRoute.of(context).settings.arguments;
     var board = BoardRepr(
         playerStateMap: playerStateMap, playerIDs: playerIDs, pot: pot);
 
-    return Scaffold(
+    var screen = Scaffold(
       body: Column(children: [
         Expanded(
             child: Stack(
@@ -86,19 +89,32 @@ class _GameScreenState extends State<GameScreen> {
         Expanded(child: Container(color: Color(0xff243010), child: ChipBar()))
       ]),
     );
+    return StreamBuilder(
+      stream: widget.channel.stream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          WebSocketSignal(snapshot.data);
+        }
+        return screen;
+      },
+    );
   }
 
   void _callChips() {
     // if (_controller.text.isNotEmpty) {
     //   widget.channel.sink.add(_controller.text);
     // }
+
+    // TODO: remove after testing
   }
 
   // Called when victory claimed
   void _resetPot() {
-    myState.chipCount += _chipToCall;
-    _chipToCall = 0;
-    _potChipCount = 0;
+    setState(() {
+      myState.chipCount += _chipToCall;
+      _chipToCall = 0;
+      _potChipCount = 0;
+    });
   }
 
   // Called when a new player joins
