@@ -135,6 +135,7 @@ std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
   sqlite3_stmt* statement;
 
   sqlite3_prepare_v2(db, GET_CHIP_STATUS_QUERY.c_str(), -1, &statement, NULL);
+  sqlite3_bind_text(statement, 1, room_id.c_str(), -1, SQLITE_STATIC);
 
   while(sqlite3_step(statement) == SQLITE_ROW) {
 
