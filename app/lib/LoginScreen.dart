@@ -45,6 +45,15 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushNamed(context, '/game', arguments: token);
             },
           ),
+          ElevatedButton(
+            child: Text('Dev Login'),
+            onPressed: () async {
+              loginRes = login("admin", "admin");
+              var token = await loginRes;
+
+              Navigator.pushNamed(context, '/game', arguments: token);
+            },
+          ),
           FutureBuilder<String>(
               future: loginRes,
               builder: (context, snapshot) {
