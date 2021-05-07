@@ -30,7 +30,14 @@ class _GameScreenState extends State<GameScreen> {
   @override
   initState() {
     super.initState();
-    wsClient = WebSocketClient(widget.channel, _myToken);
+
+    // Workaround to access arguments
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        _myToken = ModalRoute.of(context).settings.arguments;
+        wsClient = WebSocketClient(widget.channel, _myToken);
+      });
+    });
 
     // TODO: update it from route argument
     myState = PlayerState(displayedName: 'ChefYeum', chipCount: 5020);
@@ -115,8 +122,6 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _myToken = ModalRoute.of(context).settings.arguments;
-
     var pot = Text("$_potChipCount");
     var board = BoardRepr(
         playerStateMap: playerStateMap, playerIDs: playerUUIDs, pot: pot);
