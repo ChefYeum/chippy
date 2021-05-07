@@ -4,6 +4,8 @@ import { User } from "./User";
 export class Room extends Model {
   id!: string;
   turn!: number;
+  // host of the room(user id)
+  host!: string;
 }
 
 export const initRoom = async function (sequelize: Sequelize) {
@@ -22,7 +24,7 @@ export const initRoom = async function (sequelize: Sequelize) {
   );
 
   // Host
-  User.hasOne(Room, { foreignKey: "id" });
+  User.hasOne(Room, { foreignKey: "host" });
   return room;
 };
 

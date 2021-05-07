@@ -12,9 +12,9 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 CPPFLAGS := -Iinclude -I$(EXT_DIR)/include -I$(WEBSOCKETPP_DIR) -I$(JWTCPP_DIR)/include -MMD -MP
-CXXFLAGS := -Wall -std=c++11
+CXXFLAGS := -Wall -std=c++11 -DSQLITE_THREADSAFE=1
 LDFLAGS  := -Llib -L$(EXT_DIR)/lib -L$(WEBSOCKETPP_DIR)
-LDLIBS   := -lm -lboost_thread -lboost_system -lboost_chrono -lpthread -lstdc++ -lcrypto
+LDLIBS   := -lm -lboost_thread -lboost_system -lboost_chrono -lpthread -lstdc++ -lcrypto -lsqlite3
 
 .PHONY: all clean
 

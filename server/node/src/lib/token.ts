@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { getEnv } from "./env";
 import { User } from "models/User";
 
-export const ADMIN_TOKEN = getEnv("ADMIN_TOKEN", true) ?? "";
 export const JWT_SECRET = getEnv("JWT_SECRET", true) ?? "";
 
 const generateToken = async (user: User) => {

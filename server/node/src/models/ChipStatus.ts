@@ -1,4 +1,4 @@
-import { Model, NUMBER, Sequelize } from "sequelize";
+import { INTEGER, Model, NUMBER, Sequelize } from "sequelize";
 import { Room } from "./Room";
 import { User } from "./User";
 
@@ -9,6 +9,11 @@ export class ChipStatus extends Model {
 export const initChipStatus = async function (sequelize: Sequelize) {
   const chipStatus = await ChipStatus.init(
     {
+      id: {
+        type: INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       value: {
         type: NUMBER,
       },
