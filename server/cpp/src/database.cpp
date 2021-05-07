@@ -44,6 +44,7 @@ chip_status get_chip_status(sqlite3 *db, std::string user_uuid, std::string room
 
   sqlite3_stmt* statement;
   chip_status status = {
+    .user_uuid = user_uuid,
     .user_name = std::string(""),
     .value = -1,
   };
@@ -197,8 +198,9 @@ std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id) {
   while(sqlite3_step(statement) == SQLITE_ROW) {
 
     chip_status status = {
-      .user_name = std::string((char*)sqlite3_column_text(statement, 0)),
-      .value = (int)sqlite3_column_int(statement, 1),
+      .user_uuid = std::string((char*)sqlite3_column_text(statement, 0)),
+      .user_name = std::string((char*)sqlite3_column_text(statement, 1)),
+      .value = (int)sqlite3_column_int(statement, 2),
     };
 
     statuses.push_back(status);

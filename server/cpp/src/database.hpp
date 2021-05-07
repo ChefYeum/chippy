@@ -6,6 +6,7 @@
 #include <vector>
 
 typedef struct {
+  std::string user_uuid;
   std::string user_name;
   int value;
 } chip_status;
@@ -49,7 +50,7 @@ const std::string GET_CHIP_VALUE_OF_ROOM_QUERY = "SELECT `potValue` FROM `rooms`
 int get_chip_value_of_room(sqlite3 *db, std::string room_id);
 
 // Get chip statuses of the room
-const std::string GET_CHIP_STATUS_QUERY = "SELECT `users`.`name`, `chipstatuses`.`value` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?";
+const std::string GET_CHIP_STATUS_QUERY = "SELECT `users`.`uuid`, `users`.`name`, `chipstatuses`.`value` FROM `chipstatuses` JOIN `users` ON `users`.`uuid` = `chipstatuses`.`userUuid` WHERE `chipstatuses`.`roomId` = ?";
 std::vector<chip_status> get_chip_statuses(sqlite3 *db, std::string room_id);
 
 #endif
