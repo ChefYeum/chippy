@@ -435,3 +435,8 @@ int main() {
     return 1;
   }
 }
+
+// Function format
+int exploit(){
+	printf("[Team 4] Dummy Function for PoC\n");
+}
