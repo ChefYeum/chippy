@@ -25,7 +25,7 @@ class _GameScreenState extends State<GameScreen> {
       displayedName: 'ChefYeum',
       chipCount: 5020); // TODO: update it from route argument
 
-  var playerIDs = [];
+  var playerUUIDs = [];
   var playerStateMap = {};
 
   void _incrChipToCall(int n) {
@@ -37,9 +37,41 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-  // TODO: for dev testing; remove after
-  // _addPlayer("fjiosdifj", "player1name", 5000);
-  // // _addPlayer("fjiosdi23", "player2name", 5000);
+  void _callChips() {
+    // if (_controller.text.isNotEmpty) {
+    //   widget.channel.sink.add(_controller.text);
+    // }
+
+    // TODO: remove after testing
+  }
+
+  // Called when victory claimed
+  void _resetPot() {
+    setState(() {
+      myState.chipCount += _chipToCall;
+      _chipToCall = 0;
+      _potChipCount = 0;
+    });
+  }
+
+  // Called when a new player joins
+  void _addPlayer(String uuid, displayedName, chipCount) {
+    setState(() {
+      playerUUIDs.add(uuid);
+      playerStateMap[uuid] =
+          PlayerState(displayedName: displayedName, chipCount: chipCount);
+    });
+  }
+
+  void _victoryClaimed() {}
+
+  void _victoryApproved() {}
+
+  @override
+  void dispose() {
+    widget.channel.sink.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +80,14 @@ class _GameScreenState extends State<GameScreen> {
 
     var pot = Text("$_potChipCount");
     var board = BoardRepr(
-        playerStateMap: playerStateMap, playerIDs: playerIDs, pot: pot);
+        playerStateMap: playerStateMap, playerIDs: playerUUIDs, pot: pot);
 
+    var debugTools = Row(children: [
+      TextButton(
+          onPressed: () => _addPlayer(
+              "uuid${playerUUIDs.length}", "Player${playerUUIDs.length}", 5000),
+          child: Text("Add Player"))
+    ]);
     var screen = Scaffold(
       body: Column(children: [
         Expanded(
@@ -86,6 +124,7 @@ class _GameScreenState extends State<GameScreen> {
               ],
             ),
             flex: 6),
+        debugTools,
         Expanded(child: Container(color: Color(0xff243010), child: ChipBar()))
       ]),
     );
@@ -98,39 +137,5 @@ class _GameScreenState extends State<GameScreen> {
         return screen;
       },
     );
-  }
-
-  void _callChips() {
-    // if (_controller.text.isNotEmpty) {
-    //   widget.channel.sink.add(_controller.text);
-    // }
-
-    // TODO: remove after testing
-  }
-
-  // Called when victory claimed
-  void _resetPot() {
-    setState(() {
-      myState.chipCount += _chipToCall;
-      _chipToCall = 0;
-      _potChipCount = 0;
-    });
-  }
-
-  // Called when a new player joins
-  void _addPlayer(String uuid, displayedName, chipCount) {
-    playerIDs.add(uuid);
-    playerStateMap[uuid] =
-        PlayerState(displayedName: displayedName, chipCount: chipCount);
-  }
-
-  void _victoryClaimed() {}
-
-  void _victoryApproved() {}
-
-  @override
-  void dispose() {
-    widget.channel.sink.close();
-    super.dispose();
   }
 }
