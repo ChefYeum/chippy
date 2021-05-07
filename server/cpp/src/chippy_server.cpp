@@ -110,7 +110,10 @@ public:
   void process_messages() {
 
     sqlite3* db;
-    open_database(db);
+    if (!open_database(&db)) {
+      printf("Database connection error\n");
+      return;
+    }
 
     while(1) {
       unique_lock<mutex> lock(m_action_lock);

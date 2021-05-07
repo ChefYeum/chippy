@@ -11,8 +11,8 @@ typedef struct {
 } chip_status;
 
 // Open and close database instance
-bool open_database(sqlite3 *db);
-bool close_database(sqlite3 *db);
+bool open_database(sqlite3** db);
+bool close_database(sqlite3* db);
 
 // Find room_id of currently opened room
 const std::string FIND_ROOM_QUERY = "SELECT `id` FROM `rooms` LIMIT 1;";

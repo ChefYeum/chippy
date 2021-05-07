@@ -1,19 +1,19 @@
 #include "database.hpp"
 
-bool open_database(sqlite3 *db) {
+bool open_database(sqlite3** db) {
   const char* env_db_connection_str = std::getenv("DB_CONNECTION_STRING");
 
-  int rc = sqlite3_open(env_db_connection_str, &db);
+  int rc = sqlite3_open(env_db_connection_str, db);
   if(rc != SQLITE_OK) {
-    printf("%s\n", sqlite3_errmsg(db));
-    sqlite3_close(db);
+    printf("%s\n", sqlite3_errmsg(*db));
+    sqlite3_close(*db);
     return false;
   }
 
   return true;
 }
 
-bool close_database(sqlite3 *db) {
+bool close_database(sqlite3* db) {
   return sqlite3_close(db) == SQLITE_OK;
 }
 
