@@ -334,7 +334,7 @@ public:
             // Send every user info (after claiming chips)
             std::vector<chip_status> every_chip_statuses = get_chip_statuses(db, room_id);
             for (auto & status : every_chip_statuses) {
-              broadcast_message(generate_broadcast_message("claimedwin", user_uuid, status.user_name, status.value));
+              broadcast_message(generate_broadcast_message("approvedwin", user_uuid, status.user_name, status.value));
             }
           }
         }
