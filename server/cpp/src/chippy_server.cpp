@@ -4,6 +4,7 @@
 #include <jwt-cpp/jwt.h>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+#include "database.hpp"
 
 #define MAXIMUM_MESSAGE_LENGTH 500
 #define MAXIMUM_FRAGMENT_LENGTH 100
@@ -107,6 +108,10 @@ public:
   }
 
   void process_messages() {
+
+    sqlite3* db;
+    open_database(db);
+
     while(1) {
       unique_lock<mutex> lock(m_action_lock);
 
@@ -130,12 +135,14 @@ public:
           m_connections.erase(a.hdl);
           break;
         case MESSAGE:
-          process_message(a.hdl, a.msg);
+          process_message(a.hdl, a.msg, db);
           break;
         default:
           break;
       }
     }
+
+    close_database(db);
   }
 
   bool send_to(connection_hdl hdl, std::string content) {
@@ -172,7 +179,14 @@ public:
     return "";
   }
 
-  void process_message(connection_hdl hdl, server::message_ptr msg) {
+  std::string generate_broadcast_message(const char* what, std::string user_name, int chip_status) {
+    char buf[MAXIMUM_FRAGMENT_LENGTH];
+    sprintf(buf, "%s|%s|%d", what, user_name.c_str(), chip_status);
+    std::string broadcast_response(buf);
+    return broadcast_response;
+  }
+
+  void process_message(connection_hdl hdl, server::message_ptr msg, sqlite3* db) {
     connection_ptr con = m_server.get_con_from_hdl(hdl);
 
     if (con->name.empty()) {
@@ -208,20 +222,30 @@ public:
         return;
       }
 
+      std::string user_uuid = con->name;
       chippy_message message = parse_message(content);
+
+      std::string user_name = find_username(db, user_uuid);
 
       char lowercased_command[32];
       convert_to_lowercase(message.command, lowercased_command);
+      int chip_status = 0;
 
-      if (strncmp(lowercased_command, "host", 4) == 0) {
+      if (strncmp(lowercased_command, "join", 4) == 0) {
 
-      } else if (strncmp(lowercased_command, "join", 4) == 0) {
+        broadcast_message(generate_broadcast_message("joined", user_name, chip_status));
 
       } else if (strncmp(lowercased_command, "deposit", 7) == 0) {
 
+        broadcast_message(generate_broadcast_message("deposited", user_name, chip_status));
+
       } else if (strncmp(lowercased_command, "claimwin", 8) == 0) {
 
+        broadcast_message(generate_broadcast_message("claimedwin", user_name, chip_status));
+
       } else if (strncmp(lowercased_command, "approvewin", 10) == 0) {
+
+        broadcast_message(generate_broadcast_message("approvedwin", user_name, chip_status));
 
       } else {
         char response_b[MAXIMUM_FRAGMENT_LENGTH];
@@ -273,15 +297,16 @@ public:
   }
 
   void run(uint16_t port) {
-    // listen on specified port
-    m_server.listen(port);
-
-    // Start the server accept loop
-    m_server.start_accept();
-
-    // Start the ASIO io_service run loop
     try {
+      // listen on specified port
+      m_server.listen(port);
+
+      // Start the server accept loop
+      m_server.start_accept();
+
+      // Start the ASIO io_service run loop
       m_server.run();
+
     } catch (const std::exception & e) {
       std::cout << e.what() << std::endl;
     }
