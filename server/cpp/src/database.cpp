@@ -62,7 +62,7 @@ chip_status get_chip_status(sqlite3 *db, std::string user_uuid) {
   sqlite3_reset(statement);
   sqlite3_finalize(statement);
 
-  return result;
+  return status;
 }
 
 bool join_to_room(sqlite3 *db, std::string user_uuid, std::string room_id) {
