@@ -10,6 +10,8 @@
 #define MAXIMUM_FRAGMENT_LENGTH 200
 #define TOKENS_LENGTH 2
 
+#define INITIAL_CHIP_VALUE 100
+
 using namespace std;
 
 /**
@@ -129,12 +131,19 @@ public:
 
       lock_guard<mutex> guard(m_connection_lock);
 
+      // get user uuid
+      std::string user_uuid = m_server.get_con_from_hdl(a.hdl)->name;
+      // get opened room id
+      std::string room_id = find_opened_room(db);
+
       switch (a.type) {
         case SUBSCRIBE:
           m_connections.insert(a.hdl);
           m_server.send(a.hdl, "Hi. I'm Chippy. Who are you?", websocketpp::frame::opcode::text);
           break;
         case UNSUBSCRIBE:
+          // leave from room
+          leave_from_room(db, user_uuid, room_id);
           m_connections.erase(a.hdl);
           break;
         case MESSAGE:
@@ -230,31 +239,87 @@ public:
       chippy_message message = parse_message(content);
       // convert it to lowercase
       char lowercased_command[32];
+      char payload[32];
       convert_to_lowercase(message.command, lowercased_command);
+      strncpy(payload, message.payload, 32);
 
       // get user uuid
       std::string user_uuid = con->name;
-      // query username using user uuid
-      std::string user_name = find_username(db, user_uuid);
-
-      // for testing
-      int chip_status = 90;
+      // get opened room id
+      std::string room_id = find_opened_room(db);
 
       if (strncmp(lowercased_command, "join", 4) == 0) {
 
-        broadcast_message(generate_broadcast_message("joined", user_uuid, user_name, chip_status));
+        // query my chip status
+        chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
+        // which means invalid status
+        if (my_chip_status.value == -1) {
+          join_to_room(db, user_uuid, room_id);
+          add_chip(db, user_uuid, room_id, INITIAL_CHIP_VALUE);
+        }
+
+        // Send every user info joined
+        std::vector<chip_status> every_chip_statuses = get_chip_statuses(db, room_id);
+        for (auto & status : every_chip_statuses) {
+          broadcast_message(generate_broadcast_message("joined", user_uuid, status.user_name, status.value));
+        }
 
       } else if (strncmp(lowercased_command, "deposit", 7) == 0) {
 
-        broadcast_message(generate_broadcast_message("deposited", user_uuid, user_name, chip_status));
+        // query my chip status
+        chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
+        int value_to_deposit = atoi(payload);
+
+        if (my_chip_status.value < value_to_deposit) {
+          send_to(hdl, "Your chip value is to small to deposit something!");
+        } else {
+          // remove and add chip value to room
+          remove_chip(db, user_uuid, room_id, value_to_deposit);
+          add_chip_to_room(db, room_id, atoi(payload));
+          // query my chip status
+          chip_status my_new_chip_status = get_chip_status(db, user_uuid, room_id);
+          broadcast_message(generate_broadcast_message("deposited", user_uuid, my_new_chip_status.user_name, my_new_chip_status.value));
+        }
 
       } else if (strncmp(lowercased_command, "claimwin", 8) == 0) {
 
-        broadcast_message(generate_broadcast_message("claimedwin", user_uuid, user_name, chip_status));
+        value_to_claim[room_id] = get_chip_value_of_room(db, room_id);
+        claimer[room_id] = user_uuid;
+
+        // query my chip status
+        chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
+        broadcast_message(generate_broadcast_message("claimedwin", user_uuid, my_chip_status.user_name, my_chip_status.value));
 
       } else if (strncmp(lowercased_command, "approvewin", 10) == 0) {
 
-        broadcast_message(generate_broadcast_message("approvedwin", user_uuid, user_name, chip_status));
+        auto claim_i = value_to_claim.find(room_id);
+        auto claim_who = claimer.find(room_id);
+
+        if (claim_i == value_to_claim.end() || claim_who == claimer.end()) {
+          send_to(hdl, "Please call claim first.");
+        } else {
+
+          std::string _claimer = claim_who->second;
+          int _claim_value = claim_i->second;
+
+          if (_claimer == user_uuid) {
+            send_to(hdl, "Claimer can't approve one's claim!");
+          } else {
+            // remove and add chip value to room
+            add_chip(db, _claimer, room_id, _claim_value);
+            add_chip_to_room(db, room_id, _claim_value * -1);
+
+            // remove from map
+            value_to_claim.erase(room_id);
+            claimer.erase(room_id);
+
+            // Send every user info (after claiming chips)
+            std::vector<chip_status> every_chip_statuses = get_chip_statuses(db, room_id);
+            for (auto & status : every_chip_statuses) {
+              broadcast_message(generate_broadcast_message("claimedwin", user_uuid, status.user_name, status.value));
+            }
+          }
+        }
 
       } else {
         char response_b[MAXIMUM_FRAGMENT_LENGTH];
@@ -326,6 +391,8 @@ private:
   server m_server;
   con_list m_connections;
   std::queue<action> m_actions;
+  std::unordered_map<std::string, int> value_to_claim;
+  std::unordered_map<std::string, std::string> claimer;
 
   mutex m_action_lock;
   mutex m_connection_lock;
