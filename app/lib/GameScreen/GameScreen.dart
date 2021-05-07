@@ -177,7 +177,7 @@ class _GameScreenState extends State<GameScreen> {
       ]),
     );
     return StreamBuilder(
-      stream: wsClient.stream,
+      stream: widget.channel.stream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           switch (snapshot.data) {
