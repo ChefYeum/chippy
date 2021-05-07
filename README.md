@@ -4,11 +4,11 @@ Multiplatform Poker Chip Simulator
 ## Features
 ### Login and Register
 - Straightforward and (Conceptually) secure authentication to access the game. 
-- Registeration requires: username, ID, and password.
+- Registration requires: username, ID, and password.
 
 ### Poker rule
 - There is no specific betting rules built into the game.
-- Players are expected to be playing the poker offline, with an agreed betting rule.
+- Players are expected to be playing poker offline, with an agreed betting rule.
 - As a result, it can support any form of pokers listed below.
 
 #### Supported Poker Rules 
