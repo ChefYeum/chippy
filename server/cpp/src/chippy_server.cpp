@@ -143,8 +143,8 @@ public:
           break;
         case UNSUBSCRIBE:
           // leave from room
-          leave_from_room(db, user_uuid, room_id);
           m_connections.erase(a.hdl);
+          leave_from_room(db, user_uuid, room_id);
           break;
         case MESSAGE:
           process_message(a.hdl, a.msg, db);
