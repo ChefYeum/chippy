@@ -44,7 +44,48 @@ class _SignupScreenState extends State<SignupScreen> {
               signupRes = createUser(_controllers["id"].text,
                   _controllers["name"].text, _controllers["pw"].text);
               var token = await signupRes;
-              Navigator.pushNamed(context, '/game', arguments: token);
+
+              if (token == null) {
+                return showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap a button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Unable to Sign up'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text("Please try again."),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                              child: Text('Close'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                        ],
+                      );
+                    });
+              } else {
+                return showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap a button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Sign Up Successful'),
+                        actions: <Widget>[
+                          TextButton(
+                              child: Text('Join Game'),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/game',
+                                    arguments: token);
+                              }),
+                        ],
+                      );
+                    });
+              }
             },
           ),
           FutureBuilder<bool>(

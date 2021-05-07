@@ -42,7 +42,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   login(_controllers["id"].text, _controllers["pw"].text);
               var token = await loginRes;
 
-              Navigator.pushNamed(context, '/game', arguments: token);
+              if (token == null) {
+                return showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap a button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Unable to Login'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text("Please try again."),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                              child: Text('Close'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                        ],
+                      );
+                    });
+              } else {
+                Navigator.pushNamed(context, '/game', arguments: token);
+              }
             },
           ),
           ElevatedButton(
@@ -50,7 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () async {
               loginRes = login("admin", "admin");
               var token = await loginRes;
-
               Navigator.pushNamed(context, '/game', arguments: token);
             },
           ),
