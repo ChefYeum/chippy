@@ -29,7 +29,7 @@ class BoardRepr extends StatelessWidget {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                for (var i = 0; i < playerIDs.length; i += 2)
+                for (var i = 1; i < playerIDs.length; i += 2)
                   PlayerRepr(playerState: playerStateMap[playerIDs[i]])
               ])),
     ]);
