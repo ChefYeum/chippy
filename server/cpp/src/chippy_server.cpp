@@ -237,21 +237,24 @@ public:
       // query username using user uuid
       std::string user_name = find_username(db, user_uuid);
 
+      // for testing
+      int chip_status = 90;
+
       if (strncmp(lowercased_command, "join", 4) == 0) {
 
-        broadcast_message(generate_broadcast_message("joined", user_name, chip_status));
+        broadcast_message(generate_broadcast_message("joined", user_uuid, user_name, chip_status));
 
       } else if (strncmp(lowercased_command, "deposit", 7) == 0) {
 
-        broadcast_message(generate_broadcast_message("deposited", user_name, chip_status));
+        broadcast_message(generate_broadcast_message("deposited", user_uuid, user_name, chip_status));
 
       } else if (strncmp(lowercased_command, "claimwin", 8) == 0) {
 
-        broadcast_message(generate_broadcast_message("claimedwin", user_name, chip_status));
+        broadcast_message(generate_broadcast_message("claimedwin", user_uuid, user_name, chip_status));
 
       } else if (strncmp(lowercased_command, "approvewin", 10) == 0) {
 
-        broadcast_message(generate_broadcast_message("approvedwin", user_name, chip_status));
+        broadcast_message(generate_broadcast_message("approvedwin", user_uuid, user_name, chip_status));
 
       } else {
         char response_b[MAXIMUM_FRAGMENT_LENGTH];
