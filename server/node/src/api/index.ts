@@ -1,6 +1,7 @@
-import { Response, Router } from "express";
+import { Router } from "express";
 import main from "./root";
 import { login, logout, createUser } from "./user";
+import cors from "cors";
 
 export interface APIResponse<T extends any> {
   success: boolean;
@@ -8,12 +9,13 @@ export interface APIResponse<T extends any> {
 }
 
 export default function router() {
-  const router = Router();
-  router.get("/", main);
+  const r = Router();
+  r.use(cors({ origin: '*'}))
+  r.get("/", main);
 
-  router.post("/user/login", login);
-  router.get("/user/logout", logout);
-  router.post("/user", createUser);
+  r.post("/user/login", login);
+  r.get("/user/logout", logout);
+  r.post("/user", createUser);
 
-  return router;
+  return r;
 }

@@ -26,6 +26,8 @@ Including, but not limited to:
 
 # How to Setup
 ## Client `app/`
+For an alternative client, see [alt-client/ALT-CLIENT.md](./alt-client/ALT-CLIENT.md).
+
 The client follows the standard format of flutter project. Go to [Flutter - Get Started - Install](https://flutter.dev/docs/get-started/install), select the relevant operating system you'd like to run it on, and then follow the instruction 
 
 ## Server `server/`

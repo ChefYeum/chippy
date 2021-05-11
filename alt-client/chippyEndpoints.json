@@ -1,0 +1,164 @@
+[
+  {
+    "name": "My Collection",
+    "folders": [],
+    "requests": []
+  },
+  {
+    "name": "Chippy",
+    "folders": [],
+    "requests": [
+      {
+        "url": "http://localhost:8081",
+        "path": "/",
+        "method": "GET",
+        "auth": "None",
+        "httpUser": "",
+        "httpPassword": "",
+        "passwordFieldType": "password",
+        "bearerToken": "",
+        "headers": [],
+        "params": [
+          {
+            "key": "",
+            "value": "",
+            "type": "query",
+            "active": true
+          }
+        ],
+        "bodyParams": [],
+        "rawParams": "",
+        "rawInput": true,
+        "contentType": "",
+        "requestType": "curl",
+        "preRequestScript": "// pw.env.set('variable', 'value');",
+        "testScript": "// pw.expect('variable').toBe('value');",
+        "name": "Root (Test)",
+        "collection": 1
+      },
+      {
+        "url": "http://localhost:8081",
+        "path": "/user",
+        "method": "POST",
+        "auth": "None",
+        "httpUser": "",
+        "httpPassword": "",
+        "passwordFieldType": "password",
+        "bearerToken": "",
+        "headers": [],
+        "params": [
+          {
+            "key": "",
+            "value": "",
+            "type": "query",
+            "active": true
+          }
+        ],
+        "bodyParams": [
+          {
+            "key": "id",
+            "value": "userid123",
+            "active": true
+          },
+          {
+            "key": "name",
+            "value": "userDisplayName123",
+            "active": true
+          },
+          {
+            "key": "password",
+            "value": "userPasswod123",
+            "active": true
+          }
+        ],
+        "rawParams": "{\n  \"id\": \"userid123\",\n  \"name\": \"userDisplayName123\",\n  \"password\": \"userPasswod123\"\n}",
+        "rawInput": false,
+        "contentType": "application/json",
+        "requestType": "curl",
+        "preRequestScript": "// pw.env.set('variable', 'value');",
+        "testScript": "// pw.expect('variable').toBe('value');",
+        "name": "Sign Up",
+        "collection": 1
+      },
+      {
+        "url": "http://localhost:8081",
+        "path": "/user/login",
+        "method": "POST",
+        "auth": "None",
+        "httpUser": "",
+        "httpPassword": "",
+        "passwordFieldType": "password",
+        "bearerToken": "",
+        "headers": [],
+        "params": [
+          {
+            "key": "",
+            "value": "",
+            "type": "query",
+            "active": true
+          }
+        ],
+        "bodyParams": [
+          {
+            "active": true,
+            "key": "id",
+            "value": "userid123"
+          },
+          {
+            "active": true,
+            "key": "password",
+            "value": "userPasswod123"
+          }
+        ],
+        "rawParams": "{\n  \"id\": \"userid123\",\n  \"password\": \"userPasswod123\"\n}",
+        "rawInput": true,
+        "contentType": "application/json",
+        "requestType": "curl",
+        "preRequestScript": "// pw.env.set('variable', 'value');",
+        "testScript": "// pw.expect('variable').toBe('value');",
+        "name": "Login",
+        "collection": 1
+      },
+      {
+        "url": "http://localhost:8081",
+        "path": "/user/logout",
+        "method": "GET",
+        "auth": "None",
+        "httpUser": "",
+        "httpPassword": "",
+        "passwordFieldType": "password",
+        "bearerToken": "",
+        "headers": [],
+        "params": [
+          {
+            "key": "",
+            "value": "",
+            "type": "query",
+            "active": true
+          }
+        ],
+        "bodyParams": [
+          {
+            "active": true,
+            "key": "id",
+            "value": "userid123"
+          },
+          {
+            "active": true,
+            "key": "password",
+            "value": "userPasswod123"
+          }
+        ],
+        "rawParams": "{\n  \"id\": \"userid123\",\n  \"password\": \"userPasswod123\"\n}",
+        "rawInput": true,
+        "contentType": "",
+        "requestType": "curl",
+        "preRequestScript": "// pw.env.set('variable', 'value');",
+        "testScript": "// pw.expect('variable').toBe('value');",
+        "name": "Logout",
+        "collection": 1
+      }
+    ],
+    "flag": "rest"
+  }
+]
