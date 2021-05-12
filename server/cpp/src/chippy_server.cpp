@@ -278,6 +278,11 @@ public:
         chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
         int value_to_deposit = atoi(payload);
 
+        if (value_to_deposit <= 0) {
+          send_to(hdl, "Invalid value for deposit.");
+          return;
+        }
+
         if (my_chip_status.value < value_to_deposit) {
           send_to(hdl, "Your chip value is to small to deposit something!");
         } else {
