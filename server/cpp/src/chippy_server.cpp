@@ -350,7 +350,7 @@ public:
 
       } else {
         char response_b[MAXIMUM_FRAGMENT_LENGTH];
-        snprintf(response_b, MAXIMUM_FRAGMENT_LENGTH, message.payload);
+        snprintf(response_b, MAXIMUM_FRAGMENT_LENGTH, "%s", message.payload);
 
         std::string response(response_b);
         send_to(hdl, response);
