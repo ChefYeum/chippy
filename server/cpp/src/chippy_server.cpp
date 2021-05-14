@@ -235,6 +235,10 @@ public:
         return;
       }
 
+      if (content.length() == 0) {
+        return;
+      }
+
       // parse message from websocket content
       chippy_message message = parse_message(content);
       // convert it to lowercase
