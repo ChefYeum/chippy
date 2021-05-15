@@ -241,6 +241,13 @@ public:
 
       // parse message from websocket content
       chippy_message message = parse_message(content);
+
+      // valid parsed message must have command part
+      if (message.command && !message.command[0]) {
+        send_to(hdl, "Invalid message format.");
+        return;
+      }
+
       // convert it to lowercase
       char lowercased_command[32];
       char payload[32];
@@ -375,6 +382,7 @@ public:
     strncpy(pToken[i++], pos, MAXIMUM_FRAGMENT_LENGTH);
 
     while ((pos = strtok(NULL, delim)) != NULL) {
+      if (i > TOKENS_LENGTH) return i;
       strncpy(pToken[i++], pos, MAXIMUM_FRAGMENT_LENGTH);
     }
     return i;
@@ -382,6 +390,13 @@ public:
 
   chippy_message parse_message(std::string message) {
     const char* delim = "|";
+
+    // valid message format must have delimiter count of TOKENS_LENGTH - 1 or zero
+    int delimiterCount = std::count(message.begin(), message.end(), delim[0]);
+    if (delimiterCount > TOKENS_LENGTH - 1) {
+      chippy_message empty_message = { .command = "", .payload = "" };
+      return empty_message;
+    }
 
     char ibuf[MAXIMUM_MESSAGE_LENGTH];
     char obuf[TOKENS_LENGTH][MAXIMUM_FRAGMENT_LENGTH];
@@ -391,7 +406,7 @@ public:
 
     chippy_message parsed_message = {
       .command = obuf[0],
-      .payload = obuf[1],
+      .payload = delimiterCount == 0 ? (char*)"" : obuf[1],
     };
 
     return parsed_message;
