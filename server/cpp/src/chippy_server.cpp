@@ -361,9 +361,6 @@ public:
 
         std::string response(response_b);
         send_to(hdl, response);
-
-        std::string broadcast_response = "They said " + content;
-        broadcast_message(broadcast_response);
       }
     }
   }
