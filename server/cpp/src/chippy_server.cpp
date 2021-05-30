@@ -73,6 +73,7 @@ struct action {
 };
 
 class broadcast_server {
+  bool win_claimed = false;
 public:
   broadcast_server() {
     // Initialize Asio Transport
@@ -193,7 +194,7 @@ public:
 
   std::string generate_broadcast_message(const char* what, std::string user_uuid, std::string user_name, int chip_status) {
     char buf[MAXIMUM_FRAGMENT_LENGTH];
-    sprintf(buf, "%s|%s|%s|%d", what, user_uuid.c_str(), user_name.c_str(), chip_status);
+    snprintf(buf, MAXIMUM_FRAGMENT_LENGTH, "%s|%s|%s|%d", what, user_uuid.c_str(), user_name.c_str(), chip_status);
     std::string broadcast_response(buf);
     return broadcast_response;
   }
@@ -285,6 +286,11 @@ public:
           return;
         }
 
+        if (win_claimed == true) {
+          send_to(hdl, "No deposit allowed while win is claimed.");
+          return;
+        }
+
         // query my chip status
         chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
         int value_to_deposit = atoi(payload);
@@ -319,6 +325,8 @@ public:
         chip_status my_chip_status = get_chip_status(db, user_uuid, room_id);
         broadcast_message(generate_broadcast_message("claimedwin", user_uuid, my_chip_status.user_name, my_chip_status.value));
 
+        win_claimed = true;
+
       } else if (strncmp(lowercased_command, "approvewin", 10) == 0) {
 
         if (belongs_to_room == false) {
@@ -352,6 +360,8 @@ public:
             for (auto & status : every_chip_statuses) {
               broadcast_message(generate_broadcast_message("approvedwin", status.user_uuid, status.user_name, status.value));
             }
+
+            win_claimed = false;
           }
         }
 
@@ -362,14 +372,14 @@ public:
         std::string response(response_b);
         send_to(hdl, response);
 
-        std::string broadcast_response = "They said " + content;
-        broadcast_message(broadcast_response);
+        // std::string broadcast_response = "They said " + content;
+        // broadcast_message(broadcast_response);
       }
     }
   }
 
   void convert_to_lowercase(const char* input_str, char* output_str) {
-    strcpy(output_str, input_str);
+    strncpy(output_str, input_str, MAXIMUM_MESSAGE_LENGTH);
     for (unsigned int i = 0; i < strlen(output_str); i++) {
       output_str[i] = tolower(output_str[i]);
     }
