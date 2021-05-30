@@ -369,7 +369,7 @@ public:
   }
 
   void convert_to_lowercase(const char* input_str, char* output_str) {
-    strcpy(output_str, input_str);
+    strncpy(output_str, input_str, MAXIMUM_MESSAGE_LENGTH);
     for (unsigned int i = 0; i < strlen(output_str); i++) {
       output_str[i] = tolower(output_str[i]);
     }
