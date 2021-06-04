@@ -194,7 +194,7 @@ public:
 
   std::string generate_broadcast_message(const char* what, std::string user_uuid, std::string user_name, int chip_status) {
     char buf[MAXIMUM_FRAGMENT_LENGTH];
-    sprintf(buf, "%s|%s|%s|%d", what, user_uuid.c_str(), user_name.c_str(), chip_status);
+    snprintf(buf, MAXIMUM_FRAGMENT_LENGTH, "%s|%s|%s|%d", what, user_uuid.c_str(), user_name.c_str(), chip_status);
     std::string broadcast_response(buf);
     return broadcast_response;
   }
